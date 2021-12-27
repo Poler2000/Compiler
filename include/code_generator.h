@@ -1,0 +1,10 @@
+#ifndef COMPILER_V_0_1_CODE_GENERATOR_H
+#define COMPILER_V_0_1_CODE_GENERATOR_H
+
+
+class CodeGenerator {
+
+};
+
+
+#endif //COMPILER_V_0_1_CODE_GENERATOR_H
