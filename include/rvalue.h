@@ -6,7 +6,7 @@
 
 class RValue : public Value {
 public:
-    RValue(int value) {}
+    RValue(int value);
 private:
 
 };

@@ -3,9 +3,15 @@
 
 class Value {
 public:
-
+    enum ValueType {
+        TYPE_ARRAY,
+        TYPE_VAR,
+        TYPE_NUMBER,
+    };
+    explicit Value(ValueType type);
+    ValueType get_type() const;
 private:
-
+    ValueType type;
 };
 
 #endif

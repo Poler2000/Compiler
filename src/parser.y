@@ -1,11 +1,13 @@
 %{
 #include <stdio.h>
+#include <fstream>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include <stack>
 
 #include <rvalue.h>
+#include <array.h>
 #include <compiler.h>
 
 extern int yylex();
@@ -78,11 +80,17 @@ declarations:   declarations COMMA declare {; }
                 ;
 
 declare:        VARIABLE {
-                    compiler.assert_variable_not_declared($1);
-
-                    compiler.get_var_manager().declare($1);
+                    printf("new variable declaration: %s\n", $1.id->c_str());
+                    compiler.assert_variable_not_declared(*($1.id), $1.line);
+                    LValue* var = new LValue(*($1.id));
+                    compiler.get_var_manager().declare(var);
                 }
-                | VARIABLE LEFT_BRACKET ARRAY_RNG RIGHT_BRACKET {;}
+                | VARIABLE LEFT_BRACKET NUM ARRAY_RNG NUM RIGHT_BRACKET {
+                    printf("new array declaration: %s\n", $1.id->c_str());
+                    compiler.assert_variable_not_declared(*($1.id), $1.line);
+                    Array* var = new Array(*($1.id), $3.val, $3.val);
+                    compiler.get_var_manager().declare(var);
+                }
                 ;
 
 commands:      commands command {; }
@@ -117,12 +125,43 @@ condition:     value EQ value {; }
                 ;
 
 value:          NUM  { $$ = new RValue($1.val); }
-                | identifier  { ; }
+                | identifier  { }
                 ;
 
-identifier:     VARIABLE {; }
-                | VARIABLE LEFT_BRACKET VARIABLE RIGHT_BRACKET {; }
-                | VARIABLE LEFT_BRACKET NUM RIGHT_BRACKET {; }
+identifier:     VARIABLE {
+                    compiler.assert_variable_declared(*($1.id), $1.line);
+                    compiler.assert_type(*($1.id), Value::ValueType::TYPE_VAR, $1.line);
+
+                    LValue* var = compiler.get_var_manager().get(*($1.id)).get();
+                    $$ = var;
+                }
+                | VARIABLE LEFT_BRACKET VARIABLE RIGHT_BRACKET {
+                    compiler.assert_variable_declared(*($1.id), $1.line);
+                    compiler.assert_variable_declared(*($3.id), $3.line);
+                    compiler.assert_initialized(*($3.id), $3.line);
+
+                    compiler.assert_type(*($1.id), Value::ValueType::TYPE_ARRAY, $1.line);
+                    compiler.assert_type(*($3.id), Value::ValueType::TYPE_VAR, $3.line);
+
+                   Array* var = dynamic_cast<Array*>(compiler.get_var_manager().get(*($1.id)).get());
+
+                   LValue* index = new LValue(*($3.id));
+                   var->set_current(index);
+
+                   $$ = var;
+                }
+                | VARIABLE LEFT_BRACKET NUM RIGHT_BRACKET {
+                    compiler.assert_variable_declared(*($1.id), $1.line);
+
+                    compiler.assert_type(*($1.id), Value::ValueType::TYPE_ARRAY, $1.line);
+
+                   Array* var = dynamic_cast<Array*>(compiler.get_var_manager().get(*($1.id)).get());
+
+                   Value* num = new RValue($3.val);
+                   var->set_current(num);
+
+                   $$ = var;
+                 }
 
 %%
 
@@ -132,6 +171,14 @@ int compile(const char* input, const char* output) {
     yyin = fopen(input, "r");
     int result = yyparse();
     fclose(yyin);
+
+    std::ofstream outFile;
+
+    outFile.open(output);
+
+    auto code = compiler.get_code_generator().generate_asm_code();
+
+    outFile << code;
 
     return result;
 }

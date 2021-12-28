@@ -14,12 +14,6 @@ CXX_OPT   =
 CXX_FLAGS =
 CXX_WARNS =
 
-ifeq ($(CXX),clang++)
-	CXX_WARNS += -Weverything
-else ifneq (, $(filter $(CC), cc gcc))
-	CXX_WARNS += -Wall -Wextra
-endif
-
 ifeq ("$(origin DEBUG)", "command line")
 	GGDB := -ggdb3
 else

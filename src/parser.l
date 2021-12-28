@@ -1,6 +1,9 @@
 %option noyywrap 
 
 %{
+
+#define YY_NO_UNPUT
+
 #include <stdio.h>
 #include "parser_tab.h"
 void yyerror (const char *s);
@@ -10,7 +13,7 @@ static int lex_token(int token);
 static int lex_number(int token);
 static int lex_variable(int token);
 
-unsigned int lines = 0;
+unsigned int lines = 1;
 
 #define lex_degug(token) \
     ({ \
@@ -96,6 +99,10 @@ THEN            { return lex_token(THEN); }
 ELSE            { return lex_token(ELSE); }
 ENDIF           { return lex_token(END_IF); }
 
+\[              { return lex_token(LEFT_BRACKET); }
+\:              { return lex_token(ARRAY_RNG); }
+\]              { return lex_token(RIGHT_BRACKET); }
+
 
 [a-z]+          { return lex_variable(VARIABLE); }
 [0-9]+          { return lex_number(NUM); }
@@ -104,7 +111,7 @@ ENDIF           { return lex_token(END_IF); }
 %%
 
 static int lex_token(int token) {
-    lex_degug(token);
+    //lex_degug(token);
     yylval.token.val = 0;
     yylval.token.line = lines;
     yylval.token.id = nullptr;
@@ -116,7 +123,7 @@ static int lex_number(int token) {
     yylval.token.val = atoi(yytext);
     yylval.token.line = lines;
     yylval.token.id = nullptr;
-    lex_degug_num(yylval.token.val);
+    //lex_degug_num(yylval.token.val);
 
     return token;
 }
@@ -125,6 +132,6 @@ static int lex_variable(int token) {
     yylval.token.val = 0;
     yylval.token.line = lines;
     yylval.token.id = new std::string(yytext);
-    lex_degug_var(yytext);
+    //lex_degug_var(yytext);
     return token;
 }
