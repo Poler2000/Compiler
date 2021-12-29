@@ -106,7 +106,7 @@ ENDIF           { return lex_token(END_IF); }
 
 [a-z]+          { return lex_variable(VARIABLE); }
 [0-9]+          { return lex_number(NUM); }
-.               { printf("error: %s\n", yytext); }
+.               { return lex_token(ERROR); }
 
 %%
 

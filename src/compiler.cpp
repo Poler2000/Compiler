@@ -41,3 +41,21 @@ void Compiler::assert_initialized(const std::string &val, unsigned int line) {
         exit(EXIT_FAILURE);
     }
 }
+
+void Compiler::assert_array_range(const std::string &id, long first, long last, unsigned int line) {
+    if (first > last) {
+        std::cerr << "Error: incorrect range for array: " << id << " in line: " << line << '\n';
+        exit(EXIT_FAILURE);
+    }
+}
+
+void Compiler::finish() {
+
+}
+
+void Compiler::assert_initialized(const Value &val, unsigned int line) {
+    if (!val.is_initialized()) {
+        std::cerr << "Error: variable not initialized in line: " << line << '\n';
+        exit(EXIT_FAILURE);
+    }
+}

@@ -7,6 +7,7 @@
 class RValue : public Value {
 public:
     RValue(int value);
+    [[nodiscard]] bool is_initialized() const override;
 private:
 
 };

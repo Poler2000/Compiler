@@ -9,7 +9,8 @@ public:
         TYPE_NUMBER,
     };
     explicit Value(ValueType type);
-    ValueType get_type() const;
+    [[nodiscard]] ValueType get_type() const;
+    [[nodiscard]] virtual bool is_initialized() const;
 private:
     ValueType type;
 };

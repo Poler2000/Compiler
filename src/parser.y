@@ -13,6 +13,7 @@
 extern int yylex();
 void yyerror(const char* s);
 extern FILE *yyin;
+extern unsigned int lines;
 
 static Compiler compiler;
 
@@ -71,12 +72,12 @@ static Compiler compiler;
 
 %%
 
-program:        VAR declarations T_BEGIN commands END {; }
-                | T_BEGIN commands END {; }
+program:        VAR declarations T_BEGIN commands END { compiler.finish(); }
+                | T_BEGIN commands END { compiler.finish(); }
                 ;
 
-declarations:   declarations COMMA declare {; }
-                | declare {; }
+declarations:   declarations COMMA declare { /*nothing to do*/ }
+                | declare { /*nothing to do*/ }
                 ;
 
 declare:        VARIABLE {
@@ -88,44 +89,128 @@ declare:        VARIABLE {
                 | VARIABLE LEFT_BRACKET NUM ARRAY_RNG NUM RIGHT_BRACKET {
                     printf("new array declaration: %s\n", $1.id->c_str());
                     compiler.assert_variable_not_declared(*($1.id), $1.line);
-                    Array* var = new Array(*($1.id), $3.val, $3.val);
+                    compiler.assert_array_range(*($1.id), $3.val, $5.val, $1.line);
+                    Array* var = new Array(*($1.id), $3.val, $5.val);
                     compiler.get_var_manager().declare(var);
                 }
                 ;
 
-commands:      commands command {; }
-                | command {; }
+commands:      commands command { /*nothing to do*/ }
+                | command { /*nothing to do*/ }
                 ;
 
-command:       identifier ASSIGN expression SEMICOLON {; }
+command:       identifier ASSIGN expression SEMICOLON {
+                }
                 | IF condition THEN commands ELSE commands END_IF {; }
                 | IF condition THEN commands END_IF {; }
                 | WHILE condition DO commands END_WHILE {; }
                 | REPEAT commands UNTIL condition SEMICOLON {; }
-                | FOR VARIABLE FROM value TO value DO commands END_FOR {; }
+                | start_for end_for
                 | FOR VARIABLE FROM value DOWN_TO value DO commands END_FOR {; }
-                | READ identifier SEMICOLON {; }
-                | WRITE value SEMICOLON {; }
+                | READ identifier SEMICOLON {
+                    LValue* val = dynamic_cast<LValue*>($2);
+                    compiler.get_code_generator().read(*val);
+                 }
+                | WRITE value SEMICOLON {
+                    compiler.assert_initialized(*$2, $1.line);
+                    compiler.get_code_generator().write(*$2);
+                 }
                 ;
 
-expression:    value {; }
-                | value PLUS value {; }
-                | value MINUS value {; }
-                | value TIMES value {; }
-                | value DIV value {; }
-                | value MOD value {; }
+start_for:      FOR VARIABLE FROM value TO value {
+                    printf("new variable declaration: %s\n", $2.id->c_str());
+                    compiler.assert_variable_not_declared(*($2.id), $2.line);
+
+                    LValue* var = new LValue(*($2.id));
+                    compiler.get_var_manager().declare(var);
+
+                    std::string counterLabel = *($2.id) + "-counter";
+                    LValue* counter = new LValue(counterLabel);
+                    printf("new variable declaration: %s\n", counterLabel.c_str());
+                }
                 ;
 
-condition:     value EQ value {; }
-                | value NEQ value {; }
-                | value LE value {; }
-                | value GE value {; }
-                | value LEQ value {; }
-                | value GEQ value {; }
+end_for:        commands END_FOR {
+                    //compiler.get_var_manager().undeclare(iterator);
+                    //compiler.get_var_manager().undeclare(counter);
+                }
+                ;
+
+expression:    value {
+                    compiler.assert_initialized(*$1, lines);
+                }
+                | value PLUS value {
+                    compiler.assert_initialized(*$1, $2.line);
+                    compiler.assert_initialized(*$3, $2.line);
+
+                    compiler.get_code_generator().add(*$1, *$3);
+                }
+                | value MINUS value {
+                    compiler.assert_initialized(*$1, $2.line);
+                    compiler.assert_initialized(*$3, $2.line);
+
+                    compiler.get_code_generator().sub(*$1, *$3);
+                }
+                | value TIMES value {
+                    compiler.assert_initialized(*$1, $2.line);
+                    compiler.assert_initialized(*$3, $2.line);
+
+                    compiler.get_code_generator().mul(*$1, *$3);
+                }
+                | value DIV value {
+                    compiler.assert_initialized(*$1, $2.line);
+                    compiler.assert_initialized(*$3, $2.line);
+
+                    compiler.get_code_generator().div(*$1, *$3);
+                }
+                | value MOD value {
+                    compiler.assert_initialized(*$1, $2.line);
+                    compiler.assert_initialized(*$3, $2.line);
+
+                    compiler.get_code_generator().mod(*$1, *$3);
+                }
+                ;
+
+condition:     value EQ value {
+                    compiler.assert_initialized(*$1, $2.line);
+                    compiler.assert_initialized(*$3, $2.line);
+
+                    compiler.get_code_generator().eq(*$1, *$3);
+                }
+                | value NEQ value {
+                    compiler.assert_initialized(*$1, $2.line);
+                    compiler.assert_initialized(*$3, $2.line);
+
+                    compiler.get_code_generator().neq(*$1, *$3);
+                }
+                | value LE value {
+                    compiler.assert_initialized(*$1, $2.line);
+                    compiler.assert_initialized(*$3, $2.line);
+
+                    compiler.get_code_generator().le(*$1, *$3);
+                }
+                | value GE value {
+                    compiler.assert_initialized(*$1, $2.line);
+                    compiler.assert_initialized(*$3, $2.line);
+
+                    compiler.get_code_generator().ge(*$1, *$3);
+                }
+                | value LEQ value {
+                    compiler.assert_initialized(*$1, $2.line);
+                    compiler.assert_initialized(*$3, $2.line);
+
+                    compiler.get_code_generator().leq(*$1, *$3);
+                }
+                | value GEQ value {
+                    compiler.assert_initialized(*$1, $2.line);
+                    compiler.assert_initialized(*$3, $2.line);
+
+                    compiler.get_code_generator().geq(*$1, *$3);
+                }
                 ;
 
 value:          NUM  { $$ = new RValue($1.val); }
-                | identifier  { }
+                | identifier  { /*nothing tod do*/ }
                 ;
 
 identifier:     VARIABLE {
@@ -165,7 +250,7 @@ identifier:     VARIABLE {
 
 %%
 
-void yyerror (const char *s) {fprintf (stderr, "Error: %s\n", s);} 
+void yyerror (const char *s) {fprintf (stderr, "Error: %s in line: %d\n", s, lines);}
 
 int compile(const char* input, const char* output) {
     yyin = fopen(input, "r");

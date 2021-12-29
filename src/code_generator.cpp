@@ -31,3 +31,27 @@ void CodeGenerator::read(const LValue &a) {
 std::string CodeGenerator::generate_asm_code() {
     return std::string();
 }
+
+void CodeGenerator::eq(const Value &a, const Value &b) {
+
+}
+
+void CodeGenerator::neq(const Value &a, const Value &b) {
+
+}
+
+void CodeGenerator::le(const Value &a, const Value &b) {
+
+}
+
+void CodeGenerator::ge(const Value &a, const Value &b) {
+
+}
+
+void CodeGenerator::leq(const Value &a, const Value &b) {
+
+}
+
+void CodeGenerator::geq(const Value &a, const Value &b) {
+
+}

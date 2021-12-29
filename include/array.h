@@ -5,6 +5,7 @@
 
 class Array : public LValue {
 public:
+    Array(const std::string& id, long firstIndex, long lastIndex);
     uint64_t get_size() override;
     void set_current(Value* val);
 private:

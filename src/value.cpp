@@ -8,3 +8,7 @@ Value::Value(Value::ValueType type)
 Value::ValueType Value::get_type() const {
     return type;
 }
+
+bool Value::is_initialized() const {
+    return false;
+}

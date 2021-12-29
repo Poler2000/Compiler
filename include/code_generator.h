@@ -15,6 +15,13 @@ public:
     void write(const Value& a);
     void read(const LValue& a);
 
+    void eq(const Value& a, const Value& b);
+    void neq(const Value& a, const Value& b);
+    void le(const Value& a, const Value& b);
+    void ge(const Value& a, const Value& b);
+    void leq(const Value& a, const Value& b);
+    void geq(const Value& a, const Value& b);
+
     std::string generate_asm_code();
 private:
     std::vector<std::string> lines;

@@ -8,6 +8,11 @@ LValue::LValue(const std::string &id, Value::ValueType type)
     : Value(type), id(id), initialized(false) {
 }
 
+LValue::LValue(const std::string &id, Value::ValueType type, bool init)
+    : Value(type), id(id), initialized(init){
+
+}
+
 const std::string &LValue::getId() const {
     return id;
 }
