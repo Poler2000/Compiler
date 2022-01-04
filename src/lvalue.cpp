@@ -24,3 +24,11 @@ bool LValue::is_initialized() const {
 uint64_t LValue::get_size() {
     return 1;
 }
+
+void LValue::set_address(const uint64_t addr) {
+    address = addr;
+}
+
+uint64_t LValue::get_address() const {
+    return address;
+}

@@ -99,7 +99,11 @@ commands:      commands command { /*nothing to do*/ }
                 | command { /*nothing to do*/ }
                 ;
 
-command:       identifier ASSIGN expression SEMICOLON {
+command:        identifier ASSIGN expression SEMICOLON {
+                    compiler.get_code_generator().get_ret_val();
+                    compiler.get_code_generator().load();
+
+                    compiler.get
                 }
                 | IF condition THEN commands ELSE commands END_IF {; }
                 | IF condition THEN commands END_IF {; }
@@ -110,6 +114,8 @@ command:       identifier ASSIGN expression SEMICOLON {
                 | READ identifier SEMICOLON {
                     LValue* val = dynamic_cast<LValue*>($2);
                     compiler.get_code_generator().read(*val);
+
+                    compiler.initialize_variable(*val);
                  }
                 | WRITE value SEMICOLON {
                     compiler.assert_initialized(*$2, $1.line);

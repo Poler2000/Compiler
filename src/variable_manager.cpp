@@ -1,7 +1,9 @@
 #include <iostream>
 #include "variable_manager.h"
+#include "memory_manager.h"
 
 void VariableManager::declare(LValue *val) {
+    val->set_address(MemoryManager::allocate(val->get_size()));
     variableMap[val->getId()] = std::shared_ptr<LValue>(val);
 }
 

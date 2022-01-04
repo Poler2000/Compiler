@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "lvalue.h"
+#include "register.h"
 
 class CodeGenerator {
 public:
@@ -25,6 +26,9 @@ public:
     std::string generate_asm_code();
 private:
     std::vector<std::string> lines;
+
+    void move_address_to_reg(const LValue &value, const Register &reg);
+    void move_number_to_reg(const uint64_t number, const Register &reg);
 };
 
 

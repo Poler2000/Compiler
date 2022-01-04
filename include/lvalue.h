@@ -13,9 +13,14 @@ public:
     [[nodiscard]] const std::string &getId() const;
     [[nodiscard]] bool is_initialized() const override;
     virtual uint64_t get_size();
+    uint64_t get_address() const;
+
+    void set_address(uint64_t addr);
+
 private:
     std::string id;
     bool initialized;
+    uint64_t address;
 };
 
 #endif
