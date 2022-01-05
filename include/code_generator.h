@@ -7,6 +7,8 @@
 #include "lvalue.h"
 #include "register.h"
 #include "loop.h"
+#include "code_block.h"
+#include "branch.h"
 
 class CodeGenerator {
 public:
@@ -28,15 +30,30 @@ public:
     void geq(const Value& a, const Value& b);
 
     void start_loop(const std::shared_ptr<Loop>& loop);
-    std::shared_ptr<Loop> end_loop();
+    std::shared_ptr<Loop> end_for();
+    std::shared_ptr<Loop> end_repeat();
 
-    std::string generate_asm_code();
+    void start_if();
+    void start_else();
+    void end_if();
+
+    std::vector<std::string> generate_asm_code();
 private:
     std::vector<std::string> lines;
     std::stack<std::shared_ptr<Loop>> loopStack;
+    std::stack<std::shared_ptr<CodeBlock>> blockStack;
+    std::stack<std::shared_ptr<Branch>> branchStack;
 
     void move_address_to_reg(const LValue &value, const Register &reg);
     void move_number_to_reg(const uint64_t number, const Register &reg);
+
+    void add_line(const std::string& line);
+
+    void inc(const LValue& value);
+
+    void move_variable_to_reg(const LValue &value, Register &reg);
+
+    void move_number_to_a(uint64_t value);
 };
 
 

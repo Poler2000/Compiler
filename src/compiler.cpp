@@ -51,7 +51,7 @@ void Compiler::assert_array_range(const std::string &id, long first, long last, 
 }
 
 void Compiler::finish() {
-
+    std::cout << "Finished parsing!\n";
 }
 
 void Compiler::assert_initialized(const Value &val, unsigned int line) {

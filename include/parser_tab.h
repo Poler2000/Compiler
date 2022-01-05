@@ -44,7 +44,7 @@
 extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
-#line 24 "./src/parser.y"
+#line 25 "./src/parser.y"
 
     #include <string>
     #include <cstdlib>
@@ -109,7 +109,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 37 "./src/parser.y"
+#line 38 "./src/parser.y"
 
     Token token;
     Value* value;

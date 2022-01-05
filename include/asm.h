@@ -31,6 +31,7 @@ public:
             "LOAD",
             "STORE",
             "ADD",
+            "SUB",
             "SHIFT",
             "SWAP",
             "RESET",

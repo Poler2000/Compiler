@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include <iostream>
 #include <fstream>
 #include <stdlib.h>
 #include <string.h>
@@ -107,22 +108,44 @@ command:        identifier ASSIGN expression SEMICOLON {
 
                     compiler.initialize_variable(Util::to_mut_lvalue(*$1));
                 }
-                | IF condition THEN commands ELSE commands END_IF {; }
-                | IF condition THEN commands END_IF {; }
+                | start_if start_else end_if {; }
+                | start_if end_if {; }
                 | WHILE condition DO commands END_WHILE {; }
-                | REPEAT commands UNTIL condition SEMICOLON {; }
+                | start_repeat end_repeat {}
                 | start_for end_for {;}
                 | FOR VARIABLE FROM value DOWN_TO value DO commands END_FOR {; }
                 | READ identifier SEMICOLON {
                     LValue* val = dynamic_cast<LValue*>($2);
                     compiler.get_code_generator().read(*val);
-
+                    printf("Read\n");
                     compiler.initialize_variable(*val);
+                    printf("Read\n");
+
                  }
                 | WRITE value SEMICOLON {
+                    printf("Write\n");
                     compiler.assert_initialized(*$2, $1.line);
                     compiler.get_code_generator().write(*$2);
                  }
+                ;
+
+start_if:        IF condition THEN {
+                    printf("start if\n");
+                    compiler.get_code_generator().start_if();
+                }
+                ;
+
+start_else:      commands ELSE {
+                    printf("start else\n");
+                    compiler.get_code_generator().start_else();
+                 }
+                 ;
+
+end_if:          commands END_IF {
+                    printf("end if\n");
+                    compiler.get_code_generator().end_if();
+                    printf("end if\n");
+                }
                 ;
 
 start_for:      FOR VARIABLE FROM value TO value DO {
@@ -146,10 +169,24 @@ start_for:      FOR VARIABLE FROM value TO value DO {
                 ;
 
 end_for:        commands END_FOR {
-                    auto ptr = compiler.get_code_generator().end_loop();
+                    auto ptr = compiler.get_code_generator().end_for();
 
                     compiler.get_var_manager().undeclare(ptr->iterator);
                     compiler.get_var_manager().undeclare(ptr->counter);
+                }
+                ;
+
+start_repeat:   REPEAT {
+                    printf("repeat-until\n");
+                    auto ptr = std::make_shared<Loop>();
+                    compiler.get_code_generator().start_loop(ptr);
+                }
+                ;
+
+end_repeat:     commands UNTIL condition SEMICOLON {
+                     printf("repeat-until end\n");
+                     auto ptr = compiler.get_code_generator().end_repeat();
+                     printf("repeat-until end\n");
                 }
                 ;
 
@@ -158,6 +195,7 @@ expression:    value {
                     compiler.assert_initialized(*$1, lines);
                 }
                 | value PLUS value {
+                    printf("plus\n");
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
@@ -170,11 +208,8 @@ expression:    value {
                     compiler.get_code_generator().sub(*$1, *$3);
                 }
                 | value TIMES value {
-                    printf("hello\n");
                     compiler.assert_initialized(*$1, $2.line);
-                                        printf("hello\n");
                     compiler.assert_initialized(*$3, $2.line);
-                                        printf("hello\n");
 
                     compiler.get_code_generator().mul(*$1, *$3);
                 }
@@ -193,10 +228,12 @@ expression:    value {
                 ;
 
 condition:     value EQ value {
+                    printf("EQ\n");
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().eq(*$1, *$3);
+                    printf("EQ end\n");
                 }
                 | value NEQ value {
                     compiler.assert_initialized(*$1, $2.line);
@@ -279,14 +316,15 @@ int compile(const char* input, const char* output) {
     yyin = fopen(input, "r");
     int result = yyparse();
     fclose(yyin);
-
+    std::cout << "Hello\n";
     std::ofstream outFile;
 
     outFile.open(output);
 
     auto code = compiler.get_code_generator().generate_asm_code();
-
-    outFile << code;
+    for (auto& l : code) {
+        outFile << l;
+    }
 
     return result;
 }
