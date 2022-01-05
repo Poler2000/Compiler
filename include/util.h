@@ -7,6 +7,7 @@
 class Util {
 public:
     static const LValue& to_lvalue(const Value& val);
+    static LValue& to_mut_lvalue(Value& val);
     static const RValue& to_rvalue(const Value& val);
 };
 

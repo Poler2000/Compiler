@@ -2,8 +2,11 @@
 #define COMPILER_V_0_1_CODE_GENERATOR_H
 
 #include <vector>
+#include <stack>
+#include <memory>
 #include "lvalue.h"
 #include "register.h"
+#include "loop.h"
 
 class CodeGenerator {
 public:
@@ -15,6 +18,7 @@ public:
 
     void write(const Value& a);
     void read(const LValue& a);
+    void assign(const LValue& a);
 
     void eq(const Value& a, const Value& b);
     void neq(const Value& a, const Value& b);
@@ -23,9 +27,13 @@ public:
     void leq(const Value& a, const Value& b);
     void geq(const Value& a, const Value& b);
 
+    void start_loop(const std::shared_ptr<Loop>& loop);
+    std::shared_ptr<Loop> end_loop();
+
     std::string generate_asm_code();
 private:
     std::vector<std::string> lines;
+    std::stack<std::shared_ptr<Loop>> loopStack;
 
     void move_address_to_reg(const LValue &value, const Register &reg);
     void move_number_to_reg(const uint64_t number, const Register &reg);

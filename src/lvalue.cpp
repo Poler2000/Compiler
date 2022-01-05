@@ -1,15 +1,15 @@
 #include "lvalue.h"
 
 LValue::LValue(const std::string &id)
-    : Value(ValueType::TYPE_VAR), id(id), initialized(false) {
+    : Value(ValueType::TYPE_VAR), id(id), initialized(false), _isMutable(true) {
 }
 
 LValue::LValue(const std::string &id, Value::ValueType type)
-    : Value(type), id(id), initialized(false) {
+    : Value(type), id(id), initialized(false), _isMutable(true) {
 }
 
 LValue::LValue(const std::string &id, Value::ValueType type, bool init)
-    : Value(type), id(id), initialized(init){
+    : Value(type), id(id), initialized(init), _isMutable(true) {
 
 }
 
@@ -31,4 +31,16 @@ void LValue::set_address(const uint64_t addr) {
 
 uint64_t LValue::get_address() const {
     return address;
+}
+
+bool LValue::isMutable() const {
+    return _isMutable;
+}
+
+void LValue::set_mutable(bool mut) {
+    _isMutable = mut;
+}
+
+void LValue::set_initialized(bool init) {
+    initialized = init;
 }

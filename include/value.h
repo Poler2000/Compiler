@@ -11,8 +11,10 @@ public:
     explicit Value(ValueType type);
     [[nodiscard]] ValueType get_type() const;
     [[nodiscard]] virtual bool is_initialized() const;
+
 private:
     ValueType type;
+
 };
 
 #endif

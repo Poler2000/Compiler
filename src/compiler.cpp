@@ -1,4 +1,5 @@
 #include "compiler.h"
+#include "util.h"
 
 #include <iostream>
 
@@ -58,4 +59,15 @@ void Compiler::assert_initialized(const Value &val, unsigned int line) {
         std::cerr << "Error: variable not initialized in line: " << line << '\n';
         exit(EXIT_FAILURE);
     }
+}
+
+void Compiler::assert_variable_mutable(const Value &val, unsigned int line) {
+    if (val.get_type() == Value::TYPE_NUMBER || !Util::to_lvalue(val).isMutable()) {
+        std::cerr << "Error: attempted to modify not mutable variable in line: " << line << '\n';
+        exit(EXIT_FAILURE);
+    }
+}
+
+void Compiler::initialize_variable(LValue &val) {
+    val.set_initialized(true);
 }

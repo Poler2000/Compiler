@@ -45,6 +45,12 @@ void CodeGenerator::read(const LValue &a) {
     addrReg.free = true;
 }
 
+void CodeGenerator::assign(const LValue& a) {
+    Register& reg = MemoryManager::get_free_reg();
+    move_address_to_reg(a, reg);
+    lines.emplace_back(std::string(Asm::get_instruction(Asm::ASM_STORE)) + ' ' + reg.label + '\n');
+}
+
 std::string CodeGenerator::generate_asm_code() {
     return std::string();
 }
@@ -93,4 +99,14 @@ void CodeGenerator::move_address_to_reg(const LValue &value, const Register &reg
     if (value.get_type() == Value::TYPE_VAR) {
         move_number_to_reg(value.get_address(), reg);
     }
+}
+
+void CodeGenerator::start_loop(const std::shared_ptr<Loop>& loop) {
+    loopStack.push(loop);
+}
+
+std::shared_ptr<Loop> CodeGenerator::end_loop() {
+    auto ptr = loopStack.top();
+    loopStack.pop();
+    return ptr;
 }

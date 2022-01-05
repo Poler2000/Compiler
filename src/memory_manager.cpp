@@ -3,6 +3,17 @@
 
 uint64_t MemoryManager::memoryPtr = 0;
 
+std::array<Register, MemoryManager::nofRegisters> MemoryManager::registers = {{
+        {'a', true},
+        {'b', true},
+        {'c', true},
+        {'d', true},
+        {'e', true},
+        {'f', true},
+        {'g', true},
+        {'h', true},
+}};
+
 uint64_t MemoryManager::allocate(uint64_t size) {
     uint64_t currentPtr = memoryPtr;
     memoryPtr += size;

@@ -9,6 +9,7 @@
 #include <rvalue.h>
 #include <array.h>
 #include <compiler.h>
+#include <util.h>
 
 extern int yylex();
 void yyerror(const char* s);
@@ -100,16 +101,17 @@ commands:      commands command { /*nothing to do*/ }
                 ;
 
 command:        identifier ASSIGN expression SEMICOLON {
-                    compiler.get_code_generator().get_ret_val();
-                    compiler.get_code_generator().load();
+                    printf("assign\n");
+                    compiler.assert_variable_mutable(*($1), $2.line);
+                    compiler.get_code_generator().assign(Util::to_lvalue(*$1));
 
-                    compiler.get
+                    compiler.initialize_variable(Util::to_mut_lvalue(*$1));
                 }
                 | IF condition THEN commands ELSE commands END_IF {; }
                 | IF condition THEN commands END_IF {; }
                 | WHILE condition DO commands END_WHILE {; }
                 | REPEAT commands UNTIL condition SEMICOLON {; }
-                | start_for end_for
+                | start_for end_for {;}
                 | FOR VARIABLE FROM value DOWN_TO value DO commands END_FOR {; }
                 | READ identifier SEMICOLON {
                     LValue* val = dynamic_cast<LValue*>($2);
@@ -123,26 +125,36 @@ command:        identifier ASSIGN expression SEMICOLON {
                  }
                 ;
 
-start_for:      FOR VARIABLE FROM value TO value {
+start_for:      FOR VARIABLE FROM value TO value DO {
                     printf("new variable declaration: %s\n", $2.id->c_str());
                     compiler.assert_variable_not_declared(*($2.id), $2.line);
 
                     LValue* var = new LValue(*($2.id));
                     compiler.get_var_manager().declare(var);
+                    compiler.initialize_variable(*var);
+                    var->set_mutable(false);
+
+                    auto ptr = std::make_shared<Loop>();
 
                     std::string counterLabel = *($2.id) + "-counter";
                     LValue* counter = new LValue(counterLabel);
+                    ptr->iterator = var;
+                    ptr->counter = counter;
+                    compiler.get_code_generator().start_loop(ptr);
                     printf("new variable declaration: %s\n", counterLabel.c_str());
                 }
                 ;
 
 end_for:        commands END_FOR {
-                    //compiler.get_var_manager().undeclare(iterator);
-                    //compiler.get_var_manager().undeclare(counter);
+                    auto ptr = compiler.get_code_generator().end_loop();
+
+                    compiler.get_var_manager().undeclare(ptr->iterator);
+                    compiler.get_var_manager().undeclare(ptr->counter);
                 }
                 ;
 
 expression:    value {
+                    printf("hello variable\n");
                     compiler.assert_initialized(*$1, lines);
                 }
                 | value PLUS value {
@@ -158,8 +170,11 @@ expression:    value {
                     compiler.get_code_generator().sub(*$1, *$3);
                 }
                 | value TIMES value {
+                    printf("hello\n");
                     compiler.assert_initialized(*$1, $2.line);
+                                        printf("hello\n");
                     compiler.assert_initialized(*$3, $2.line);
+                                        printf("hello\n");
 
                     compiler.get_code_generator().mul(*$1, *$3);
                 }
@@ -220,6 +235,7 @@ value:          NUM  { $$ = new RValue($1.val); }
                 ;
 
 identifier:     VARIABLE {
+                    printf("hello var\n");
                     compiler.assert_variable_declared(*($1.id), $1.line);
                     compiler.assert_type(*($1.id), Value::ValueType::TYPE_VAR, $1.line);
 
@@ -227,6 +243,7 @@ identifier:     VARIABLE {
                     $$ = var;
                 }
                 | VARIABLE LEFT_BRACKET VARIABLE RIGHT_BRACKET {
+                    printf("hello array\n");
                     compiler.assert_variable_declared(*($1.id), $1.line);
                     compiler.assert_variable_declared(*($3.id), $3.line);
                     compiler.assert_initialized(*($3.id), $3.line);
