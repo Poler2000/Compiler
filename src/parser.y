@@ -193,6 +193,8 @@ end_repeat:     commands UNTIL condition SEMICOLON {
 expression:    value {
                     printf("hello variable\n");
                     compiler.assert_initialized(*$1, lines);
+
+                    compiler.get_code_generator().load(*$1);
                 }
                 | value PLUS value {
                     printf("plus\n");

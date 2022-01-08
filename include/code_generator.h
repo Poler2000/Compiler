@@ -37,7 +37,12 @@ public:
     void start_else();
     void end_if();
 
+    void load(const Value &value);
+
     std::vector<std::string> generate_asm_code();
+
+    void halt();
+
 private:
     std::vector<std::string> lines;
     std::stack<std::shared_ptr<Loop>> loopStack;

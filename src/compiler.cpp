@@ -51,6 +51,7 @@ void Compiler::assert_array_range(const std::string &id, long first, long last, 
 }
 
 void Compiler::finish() {
+    generator.halt();
     std::cout << "Finished parsing!\n";
 }
 
