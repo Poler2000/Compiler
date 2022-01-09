@@ -59,6 +59,8 @@ private:
     void move_variable_to_reg(const LValue &value, Register &reg);
 
     void move_number_to_a(uint64_t value);
+
+    void copy_from_to(Register &reg1, Register &reg2);
 };
 
 
