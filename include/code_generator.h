@@ -50,7 +50,7 @@ private:
     std::stack<std::shared_ptr<Branch>> branchStack;
 
     void move_address_to_reg(const LValue &value, const Register &reg);
-    void move_number_to_reg(const uint64_t number, const Register &reg);
+    void move_number_to_reg(const long long number, const Register &reg);
 
     void add_line(const std::string& line);
 
@@ -58,7 +58,7 @@ private:
 
     void move_variable_to_reg(const LValue &value, Register &reg);
 
-    void move_number_to_a(uint64_t value);
+    void move_number_to_a(long long value);
 
     void copy_from_to(Register &reg1, Register &reg2);
 };
