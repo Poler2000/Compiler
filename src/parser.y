@@ -218,7 +218,9 @@ expression:    value {
                 | value DIV value {
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
-
+                    LValue* var = new LValue("div-flag");
+                    compiler.get_var_manager().declare(var);
+                    compiler.initialize_variable(*var);
                     compiler.get_code_generator().div(*$1, *$3);
                 }
                 | value MOD value {

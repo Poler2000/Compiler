@@ -1,7 +1,7 @@
 #include <iostream>
 #include "memory_manager.h"
 
-uint64_t MemoryManager::memoryPtr = 0;
+uint64_t MemoryManager::memoryPtr = 1;
 
 std::array<Register, MemoryManager::nofRegisters> MemoryManager::registers = {{
         {'a', true},
