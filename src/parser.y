@@ -244,8 +244,10 @@ expression:    value {
                 | value MOD value {
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
-
-                    compiler.get_code_generator().mod(*$1, *$3);
+                    LValue* var = new LValue("mod-helper");
+                    compiler.get_var_manager().declare(var);
+                    compiler.initialize_variable(*var);
+                    compiler.get_code_generator().mod(*$1, *$3, *var);
                 }
                 ;
 
@@ -335,6 +337,10 @@ identifier:     VARIABLE {
 void yyerror (const char *s) {fprintf (stderr, "Error: %s in line: %d\n", s, lines);}
 
 int compile(const char* input, const char* output) {
+    std::cout << 26 % 7 << '\n';
+    std::cout << -26 % 7 << '\n';
+    std::cout << 26 % -7 << '\n';
+    std::cout << -26 % -7 << '\n';
     yyin = fopen(input, "r");
     int result = yyparse();
     fclose(yyin);

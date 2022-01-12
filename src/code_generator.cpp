@@ -590,7 +590,9 @@ void CodeGenerator::div(const Value &a, const Value& b) {
 }*/
 
 void CodeGenerator::mod(const Value &a, const Value& b) {
-    Register& reg1 = MemoryManager::get_free_reg();
+    div(a, b);
+
+    /*Register& reg1 = MemoryManager::get_free_reg();
     reg1.free = false;
     Register& reg2 = MemoryManager::get_free_reg();
     reg2.free = false;
@@ -619,7 +621,7 @@ void CodeGenerator::mod(const Value &a, const Value& b) {
     add_line(std::string(Asm::get_instruction(Asm::ASM_ADD)) + ' ' + reg1.label + '\n');
 
     reg1.free = true;
-    reg2.free = true;
+    reg2.free = true;*/
 }
 
 void CodeGenerator::write(const Value &a) {
@@ -1177,4 +1179,41 @@ void CodeGenerator::copy_from_to(Register &reg1, Register &reg2) {
     add_line(std::string(Asm::get_instruction(Asm::ASM_ADD)) + ' ' + reg1.label + '\n');
     add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg2.label + '\n');
     add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg.label + '\n');
+}
+
+void CodeGenerator::mod(const Value &a, const Value &b, const Value& helper) {
+    div(a, b);
+    Register& reg = MemoryManager::get_free_reg();
+    reg.free = false;
+    Register& reg1 = MemoryManager::get_free_reg();
+    reg1.free = false;
+    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg1.label + '\n');
+    move_address_to_reg(Util::to_lvalue(helper), reg);
+    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg1.label + '\n');
+    add_line(std::string(Asm::get_instruction(Asm::ASM_STORE)) + ' ' + reg.label + '\n');
+    reg.free = true;
+    reg1.free = true;
+    mul(helper, b);
+
+    reg.free = false;
+    reg1.free = false;
+
+    Register& reg2 = MemoryManager::get_free_reg();
+    reg2.free = false;
+
+    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg1.label + '\n');
+
+    if (a.get_type() == Value::TYPE_NUMBER) {
+        move_number_to_reg(Util::to_rvalue(a).get_value(), reg2);
+    } else {
+        move_number_to_reg(Util::to_lvalue(a).get_address(), reg2);
+        add_line(std::string(Asm::get_instruction(Asm::ASM_LOAD)) + ' ' + reg2.label + '\n');
+        add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg2.label + '\n');
+    }
+    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg2.label + '\n');
+    add_line(std::string(Asm::get_instruction(Asm::ASM_SUB)) + ' ' + reg1.label + '\n');
+    reg.free = true;
+    reg1.free = true;
+    reg2.free = true;
+
 }
