@@ -8,8 +8,7 @@ struct Loop {
     LValue* counter;
     /*std::string l1;
     std::string l2;*/
-    uint64_t start;
-    uint64_t end;
+    uint64_t condLength;
 };
 
 #endif //COMPILER_V_0_1_LOOP_H

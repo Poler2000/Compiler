@@ -32,6 +32,8 @@ public:
     void start_loop(const std::shared_ptr<Loop>& loop);
     std::shared_ptr<Loop> end_for();
     std::shared_ptr<Loop> end_repeat();
+    std::shared_ptr<Loop> end_while();
+    void while_cond();
 
     void start_if();
     void start_else();

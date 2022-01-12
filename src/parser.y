@@ -110,8 +110,8 @@ command:        identifier ASSIGN expression SEMICOLON {
                 }
                 | start_if start_else end_if {; }
                 | start_if end_if {; }
-                | WHILE condition DO commands END_WHILE {; }
-                | start_repeat end_repeat {}
+                | start_while while_cond end_while {;}
+                | start_repeat end_repeat {;}
                 | start_for end_for {;}
                 | FOR VARIABLE FROM value DOWN_TO value DO commands END_FOR {; }
                 | READ identifier SEMICOLON {
@@ -187,6 +187,24 @@ end_repeat:     commands UNTIL condition SEMICOLON {
                      printf("repeat-until end\n");
                      auto ptr = compiler.get_code_generator().end_repeat();
                      printf("repeat-until end\n");
+                }
+                ;
+
+start_while:   WHILE {
+                    printf("while\n");
+                    auto ptr = std::make_shared<Loop>();
+                    compiler.get_code_generator().start_loop(ptr);
+                }
+                ;
+
+while_cond:      condition DO {
+                    compiler.get_code_generator().while_cond();
+                }
+                ;
+
+end_while:     commands END_WHILE {
+                     printf("while end\n");
+                     auto ptr = compiler.get_code_generator().end_while();
                 }
                 ;
 
