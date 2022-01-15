@@ -104,8 +104,7 @@ commands:      commands command { /*nothing to do*/ }
 command:        identifier ASSIGN expression SEMICOLON {
                     printf("assign\n");
                     compiler.assert_variable_mutable(*($1), $2.line);
-                    compiler.get_code_generator().assign(Util::to_lvalue(*$1));
-
+                    compiler.get_code_generator().assign(*$1);
                     compiler.initialize_variable(Util::to_mut_lvalue(*$1));
                 }
                 | start_if start_else end_if {; }
@@ -113,7 +112,7 @@ command:        identifier ASSIGN expression SEMICOLON {
                 | start_while while_cond end_while {;}
                 | start_repeat end_repeat {;}
                 | start_for end_for {;}
-                | FOR VARIABLE FROM value DOWN_TO value DO commands END_FOR {; }
+                | start_down_to end_down_to {;}
                 | READ identifier SEMICOLON {
                     LValue* val = dynamic_cast<LValue*>($2);
                     compiler.get_code_generator().read(*val);
@@ -161,18 +160,57 @@ start_for:      FOR VARIABLE FROM value TO value DO {
 
                     std::string counterLabel = *($2.id) + "-counter";
                     LValue* counter = new LValue(counterLabel);
+                    compiler.get_var_manager().declare(counter);
+                    compiler.initialize_variable(*counter);
+
                     ptr->iterator = var;
                     ptr->counter = counter;
-                    compiler.get_code_generator().start_loop(ptr);
+                    compiler.get_code_generator().start_for(ptr, *$4, *$6);
                     printf("new variable declaration: %s\n", counterLabel.c_str());
                 }
                 ;
 
 end_for:        commands END_FOR {
+                    printf("Hello end for\n");
+
                     auto ptr = compiler.get_code_generator().end_for();
+                    printf("Hello end for 2\n");
+
 
                     compiler.get_var_manager().undeclare(ptr->iterator);
                     compiler.get_var_manager().undeclare(ptr->counter);
+                }
+                ;
+
+start_down_to:  FOR VARIABLE FROM value DOWN_TO value DO {
+                    compiler.assert_variable_not_declared(*($2.id), $2.line);
+
+                    LValue* var = new LValue(*($2.id));
+                    compiler.get_var_manager().declare(var);
+                    compiler.initialize_variable(*var);
+                    var->set_mutable(false);
+
+                    auto ptr = std::make_shared<Loop>();
+
+                    std::string counterLabel = *($2.id) + "-counter";
+                    LValue* counter = new LValue(counterLabel);
+                    compiler.get_var_manager().declare(counter);
+                    compiler.initialize_variable(*counter);
+
+                    ptr->iterator = var;
+                    ptr->counter = counter;
+
+                    compiler.get_code_generator().start_for(ptr, *$4, *$6);
+                    printf("new variable declaration: %s\n", counterLabel.c_str());
+                }
+                ;
+
+end_down_to:    commands END_FOR {
+                    auto ptr = compiler.get_code_generator().end_down_to();
+
+                    compiler.get_var_manager().undeclare(ptr->iterator);
+                    compiler.get_var_manager().undeclare(ptr->counter);
+
                 }
                 ;
 
@@ -247,7 +285,8 @@ expression:    value {
                     LValue* var = new LValue("mod-helper");
                     compiler.get_var_manager().declare(var);
                     compiler.initialize_variable(*var);
-                    compiler.get_code_generator().mod(*$1, *$3, *var);
+                    compiler.get_code_generator().mod(*$1, *$3);
+                    //compiler.get_code_generator().mod(*$1, *$3, *var);
                 }
                 ;
 
@@ -260,10 +299,12 @@ condition:     value EQ value {
                     printf("EQ end\n");
                 }
                 | value NEQ value {
+                    printf("NEQ\n");
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().neq(*$1, *$3);
+                    printf("NEQ end\n");
                 }
                 | value LE value {
                     compiler.assert_initialized(*$1, $2.line);
@@ -292,7 +333,7 @@ condition:     value EQ value {
                 ;
 
 value:          NUM  { $$ = new RValue($1.val); }
-                | identifier  { /*nothing tod do*/ }
+                | identifier  { /*nothing to do*/ }
                 ;
 
 identifier:     VARIABLE {
@@ -313,23 +354,24 @@ identifier:     VARIABLE {
                     compiler.assert_type(*($3.id), Value::ValueType::TYPE_VAR, $3.line);
 
                    Array* var = dynamic_cast<Array*>(compiler.get_var_manager().get(*($1.id)).get());
+                   Array* array = new Array(*var);
+                   LValue* index = compiler.get_var_manager().get(*($3.id)).get();
+                   array->set_current(index);
 
-                   LValue* index = new LValue(*($3.id));
-                   var->set_current(index);
-
-                   $$ = var;
+                   $$ = array;
+                   printf("goodbye array\n");
                 }
                 | VARIABLE LEFT_BRACKET NUM RIGHT_BRACKET {
                     compiler.assert_variable_declared(*($1.id), $1.line);
 
-                    compiler.assert_type(*($1.id), Value::ValueType::TYPE_ARRAY, $1.line);
-
+                   compiler.assert_type(*($1.id), Value::ValueType::TYPE_ARRAY, $1.line);
+                   printf("in parser: %d\n", $3.val);
                    Array* var = dynamic_cast<Array*>(compiler.get_var_manager().get(*($1.id)).get());
-
+                   Array* array = new Array(*var);
                    Value* num = new RValue($3.val);
-                   var->set_current(num);
+                   array->set_current(num);
 
-                   $$ = var;
+                   $$ = array;
                  }
 
 %%

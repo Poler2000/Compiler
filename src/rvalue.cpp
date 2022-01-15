@@ -1,6 +1,6 @@
 #include "rvalue.h"
 
-RValue::RValue(uint64_t value)
+RValue::RValue(long long value)
     : Value(ValueType::TYPE_NUMBER), value(value) {
 }
 
@@ -8,6 +8,6 @@ bool RValue::is_initialized() const {
     return true;
 }
 
-uint64_t RValue::get_value() const {
+long long RValue::get_value() const {
     return value;
 }

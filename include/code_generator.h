@@ -21,7 +21,7 @@ public:
 
     void write(const Value& a);
     void read(const LValue& a);
-    void assign(const LValue& a);
+    void assign(const Value& a);
 
     void eq(const Value& a, const Value& b);
     void neq(const Value& a, const Value& b);
@@ -31,7 +31,9 @@ public:
     void geq(const Value& a, const Value& b);
 
     void start_loop(const std::shared_ptr<Loop>& loop);
+    void start_for(const std::shared_ptr<Loop>& loop, const Value& from, const Value& to);
     std::shared_ptr<Loop> end_for();
+    std::shared_ptr<Loop> end_down_to();
     std::shared_ptr<Loop> end_repeat();
     std::shared_ptr<Loop> end_while();
     void while_cond();
@@ -54,16 +56,17 @@ private:
 
     void move_address_to_reg(const LValue &value, const Register &reg);
     void move_number_to_reg(const long long number, const Register &reg);
+    void move_value_to_reg(const Value &value, const Register &reg);
 
     void add_line(const std::string& line);
 
     void inc(const LValue& value);
 
-    void move_variable_to_reg(const LValue &value, Register &reg);
-
     void move_number_to_a(long long value);
 
     void copy_from_to(Register &reg1, Register &reg2);
+
+    void dec(const LValue &value);
 };
 
 

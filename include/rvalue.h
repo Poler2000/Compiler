@@ -7,11 +7,11 @@
 
 class RValue : public Value {
 public:
-    RValue(uint64_t value);
+    RValue(long long value);
     [[nodiscard]] bool is_initialized() const override;
-    uint64_t get_value() const;
+    long long get_value() const;
 private:
-    uint64_t value;
+    long long value;
 };
 
 #endif

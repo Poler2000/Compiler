@@ -11,3 +11,7 @@ const RValue &Util::to_rvalue(const Value &val) {
 LValue &Util::to_mut_lvalue(Value &val) {
     return dynamic_cast<LValue&>(val);
 }
+
+const Array &Util::to_array(const Value &val) {
+    return dynamic_cast<const Array&>(val);
+}
