@@ -141,9 +141,7 @@ start_else:      commands ELSE {
                  ;
 
 end_if:          commands END_IF {
-                    printf("end if\n");
                     compiler.get_code_generator().end_if();
-                    printf("end if\n");
                 }
                 ;
 
@@ -171,10 +169,8 @@ start_for:      FOR VARIABLE FROM value TO value DO {
                 ;
 
 end_for:        commands END_FOR {
-                    printf("Hello end for\n");
 
                     auto ptr = compiler.get_code_generator().end_for();
-                    printf("Hello end for 2\n");
 
 
                     compiler.get_var_manager().undeclare(ptr->iterator);
@@ -222,16 +218,15 @@ start_repeat:   REPEAT {
                 ;
 
 end_repeat:     commands UNTIL condition SEMICOLON {
-                     printf("repeat-until end\n");
                      auto ptr = compiler.get_code_generator().end_repeat();
-                     printf("repeat-until end\n");
                 }
                 ;
 
 start_while:   WHILE {
-                    printf("while\n");
+                    printf("start while\n");
                     auto ptr = std::make_shared<Loop>();
                     compiler.get_code_generator().start_loop(ptr);
+                                        printf("while started\n");
                 }
                 ;
 
@@ -241,13 +236,11 @@ while_cond:      condition DO {
                 ;
 
 end_while:     commands END_WHILE {
-                     printf("while end\n");
                      auto ptr = compiler.get_code_generator().end_while();
                 }
                 ;
 
 expression:    value {
-                    printf("hello variable\n");
                     compiler.assert_initialized(*$1, lines);
 
                     compiler.get_code_generator().load(*$1);
@@ -291,20 +284,16 @@ expression:    value {
                 ;
 
 condition:     value EQ value {
-                    printf("EQ\n");
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().eq(*$1, *$3);
-                    printf("EQ end\n");
                 }
                 | value NEQ value {
-                    printf("NEQ\n");
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().neq(*$1, *$3);
-                    printf("NEQ end\n");
                 }
                 | value LE value {
                     compiler.assert_initialized(*$1, $2.line);
@@ -313,10 +302,12 @@ condition:     value EQ value {
                     compiler.get_code_generator().le(*$1, *$3);
                 }
                 | value GE value {
+                printf("ge\n");
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().ge(*$1, *$3);
+                                    printf("ge end\n");
                 }
                 | value LEQ value {
                     compiler.assert_initialized(*$1, $2.line);
@@ -337,7 +328,6 @@ value:          NUM  { $$ = new RValue($1.val); }
                 ;
 
 identifier:     VARIABLE {
-                    printf("hello var\n");
                     compiler.assert_variable_declared(*($1.id), $1.line);
                     compiler.assert_type(*($1.id), Value::ValueType::TYPE_VAR, $1.line);
 
@@ -345,7 +335,6 @@ identifier:     VARIABLE {
                     $$ = var;
                 }
                 | VARIABLE LEFT_BRACKET VARIABLE RIGHT_BRACKET {
-                    printf("hello array\n");
                     compiler.assert_variable_declared(*($1.id), $1.line);
                     compiler.assert_variable_declared(*($3.id), $3.line);
                     compiler.assert_initialized(*($3.id), $3.line);
@@ -359,13 +348,11 @@ identifier:     VARIABLE {
                    array->set_current(index);
 
                    $$ = array;
-                   printf("goodbye array\n");
                 }
                 | VARIABLE LEFT_BRACKET NUM RIGHT_BRACKET {
                     compiler.assert_variable_declared(*($1.id), $1.line);
 
                    compiler.assert_type(*($1.id), Value::ValueType::TYPE_ARRAY, $1.line);
-                   printf("in parser: %d\n", $3.val);
                    Array* var = dynamic_cast<Array*>(compiler.get_var_manager().get(*($1.id)).get());
                    Array* array = new Array(*var);
                    Value* num = new RValue($3.val);
