@@ -35,3 +35,12 @@ Register &MemoryManager::get_free_reg() {
     std::cerr << "Error: no free register\n";
     exit(EXIT_FAILURE);
 }
+
+std::shared_ptr<Register> MemoryManager::check_for_value(Value & value) {
+    for (auto& reg: registers) {
+        if (*(reg.value) == value) {
+            return std::make_shared<Register>(reg);
+        }
+    }
+    return nullptr;
+}

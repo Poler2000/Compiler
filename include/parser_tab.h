@@ -51,7 +51,7 @@ extern int yydebug;
     #include <rvalue.h>
     typedef struct Token
     {
-        int val;
+        long long val;
         unsigned int line;
         std::string* id;
     } Token;

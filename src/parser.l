@@ -5,6 +5,7 @@
 #define YY_NO_UNPUT
 
 #include <stdio.h>
+#include <iostream>
 #include "parser_tab.h"
 void yyerror (const char *s);
 int yylex();
@@ -40,8 +41,8 @@ WHITE_SPACE     [ \t]
 {WHITE_SPACE}+  ;
 
 
-\(              { printf("Comment begin\n"); BEGIN(COMMENT); }
-<COMMENT>\)     { printf("Comment end\n"); BEGIN(INITIAL); } 
+\(              { /*printf("Comment begin\n");*/ BEGIN(COMMENT); }
+<COMMENT>\)     { /*printf("Comment end\n");*/ BEGIN(INITIAL); }
 <COMMENT>\n     { lines++; }
 <COMMENT>[^\)\(\n)] { ; }
 
@@ -120,7 +121,7 @@ static int lex_token(int token) {
 }
 
 static int lex_number(int token) {
-    yylval.token.val = atoi(yytext);
+    yylval.token.val = std::stoll(yytext);
     yylval.token.line = lines;
     yylval.token.id = nullptr;
     //lex_degug_num(yylval.token.val);

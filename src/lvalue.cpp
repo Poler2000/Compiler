@@ -1,15 +1,21 @@
 #include "lvalue.h"
 
-LValue::LValue(const std::string &id)
-    : Value(ValueType::TYPE_VAR), id(id), initialized(false), _isMutable(true) {
+#include <utility>
+#include <util.h>
+
+LValue::LValue(std::string id)
+    : Value(ValueType::TYPE_VAR), id(std::move(id)), initialized(false),
+    address(0), _isMutable(true), isValueKnown(false), currentValue(0) {
 }
 
-LValue::LValue(const std::string &id, Value::ValueType type)
-    : Value(type), id(id), initialized(false), _isMutable(true) {
+LValue::LValue(std::string id, Value::ValueType type)
+    : Value(type), id(std::move(id)), initialized(false), address(0),
+    _isMutable(true), isValueKnown(false), currentValue(0) {
 }
 
-LValue::LValue(const std::string &id, Value::ValueType type, bool init)
-    : Value(type), id(id), initialized(init), _isMutable(true) {
+LValue::LValue(std::string id, Value::ValueType type, bool init)
+    : Value(type), id(std::move(id)), initialized(init), address(0),
+    _isMutable(true), isValueKnown(false), currentValue(0) {
 
 }
 
@@ -43,4 +49,33 @@ void LValue::set_mutable(bool mut) {
 
 void LValue::set_initialized(bool init) {
     initialized = init;
+}
+
+bool LValue::is_compile_time_known() const {
+    return isValueKnown;
+}
+
+void LValue::set_current_value(long long int value) {
+    currentValue = value;
+    isValueKnown = true;
+}
+
+void LValue::reset_current_value() {
+    isValueKnown = false;
+}
+
+long long LValue::get_current_value() const {
+    return currentValue;
+}
+
+bool LValue::operator==(const Value &rhs) const {
+    if (!rhs.is_compile_time_known() || !isValueKnown) {
+        return id == Util::to_lvalue(rhs).id;
+    } else {
+        if (rhs.get_type() == TYPE_NUMBER) {
+            return currentValue == Util::to_rvalue(rhs).get_value();
+        } else {
+            return currentValue == Util::to_lvalue(rhs).get_current_value();
+        }
+    }
 }

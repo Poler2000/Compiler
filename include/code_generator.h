@@ -62,8 +62,6 @@ private:
 
     void inc(const LValue& value);
 
-    void move_number_to_a(long long value);
-
     void copy_from_to(Register &reg1, Register &reg2);
 
     void dec(const LValue &value);

@@ -28,7 +28,7 @@ static Compiler compiler;
     #include <rvalue.h>
     typedef struct Token
     {
-        int val;
+        long long val;
         unsigned int line;
         std::string* id;
     } Token;
@@ -83,13 +83,13 @@ declarations:   declarations COMMA declare { /*nothing to do*/ }
                 ;
 
 declare:        VARIABLE {
-                    printf("new variable declaration: %s\n", $1.id->c_str());
+                    //printf("new variable declaration: %s\n", $1.id->c_str());
                     compiler.assert_variable_not_declared(*($1.id), $1.line);
                     LValue* var = new LValue(*($1.id));
                     compiler.get_var_manager().declare(var);
                 }
                 | VARIABLE LEFT_BRACKET NUM ARRAY_RNG NUM RIGHT_BRACKET {
-                    printf("new array declaration: %s\n", $1.id->c_str());
+                    //printf("new array declaration: %s\n", $1.id->c_str());
                     compiler.assert_variable_not_declared(*($1.id), $1.line);
                     compiler.assert_array_range(*($1.id), $3.val, $5.val, $1.line);
                     Array* var = new Array(*($1.id), $3.val, $5.val);
@@ -102,7 +102,6 @@ commands:      commands command { /*nothing to do*/ }
                 ;
 
 command:        identifier ASSIGN expression SEMICOLON {
-                    printf("assign\n");
                     compiler.assert_variable_mutable(*($1), $2.line);
                     compiler.get_code_generator().assign(*$1);
                     compiler.initialize_variable(Util::to_mut_lvalue(*$1));
@@ -116,26 +115,20 @@ command:        identifier ASSIGN expression SEMICOLON {
                 | READ identifier SEMICOLON {
                     LValue* val = dynamic_cast<LValue*>($2);
                     compiler.get_code_generator().read(*val);
-                    printf("Read\n");
                     compiler.initialize_variable(*val);
-                    printf("Read\n");
-
                  }
                 | WRITE value SEMICOLON {
-                    printf("Write\n");
                     compiler.assert_initialized(*$2, $1.line);
                     compiler.get_code_generator().write(*$2);
                  }
                 ;
 
 start_if:        IF condition THEN {
-                    printf("start if\n");
                     compiler.get_code_generator().start_if();
                 }
                 ;
 
 start_else:      commands ELSE {
-                    printf("start else\n");
                     compiler.get_code_generator().start_else();
                  }
                  ;
@@ -146,7 +139,7 @@ end_if:          commands END_IF {
                 ;
 
 start_for:      FOR VARIABLE FROM value TO value DO {
-                    printf("new variable declaration: %s\n", $2.id->c_str());
+                    //printf("new variable declaration: %s\n", $2.id->c_str());
                     compiler.assert_variable_not_declared(*($2.id), $2.line);
 
                     LValue* var = new LValue(*($2.id));
@@ -164,7 +157,7 @@ start_for:      FOR VARIABLE FROM value TO value DO {
                     ptr->iterator = var;
                     ptr->counter = counter;
                     compiler.get_code_generator().start_for(ptr, *$4, *$6);
-                    printf("new variable declaration: %s\n", counterLabel.c_str());
+                    //printf("new variable declaration: %s\n", counterLabel.c_str());
                 }
                 ;
 
@@ -197,7 +190,7 @@ start_down_to:  FOR VARIABLE FROM value DOWN_TO value DO {
                     ptr->counter = counter;
 
                     compiler.get_code_generator().start_for(ptr, *$4, *$6);
-                    printf("new variable declaration: %s\n", counterLabel.c_str());
+                    //printf("new variable declaration: %s\n", counterLabel.c_str());
                 }
                 ;
 
@@ -211,7 +204,6 @@ end_down_to:    commands END_FOR {
                 ;
 
 start_repeat:   REPEAT {
-                    printf("repeat-until\n");
                     auto ptr = std::make_shared<Loop>();
                     compiler.get_code_generator().start_loop(ptr);
                 }
@@ -223,10 +215,8 @@ end_repeat:     commands UNTIL condition SEMICOLON {
                 ;
 
 start_while:   WHILE {
-                    printf("start while\n");
                     auto ptr = std::make_shared<Loop>();
                     compiler.get_code_generator().start_loop(ptr);
-                                        printf("while started\n");
                 }
                 ;
 
@@ -246,7 +236,6 @@ expression:    value {
                     compiler.get_code_generator().load(*$1);
                 }
                 | value PLUS value {
-                    printf("plus\n");
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
@@ -302,12 +291,10 @@ condition:     value EQ value {
                     compiler.get_code_generator().le(*$1, *$3);
                 }
                 | value GE value {
-                printf("ge\n");
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().ge(*$1, *$3);
-                                    printf("ge end\n");
                 }
                 | value LEQ value {
                     compiler.assert_initialized(*$1, $2.line);
@@ -366,14 +353,9 @@ identifier:     VARIABLE {
 void yyerror (const char *s) {fprintf (stderr, "Error: %s in line: %d\n", s, lines);}
 
 int compile(const char* input, const char* output) {
-    std::cout << 26 % 7 << '\n';
-    std::cout << -26 % 7 << '\n';
-    std::cout << 26 % -7 << '\n';
-    std::cout << -26 % -7 << '\n';
     yyin = fopen(input, "r");
     int result = yyparse();
     fclose(yyin);
-    std::cout << "Hello\n";
     std::ofstream outFile;
 
     outFile.open(output);
