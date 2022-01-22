@@ -2,6 +2,7 @@
 
 #include <utility>
 #include <util.h>
+#include <iostream>
 
 LValue::LValue(std::string id)
     : Value(ValueType::TYPE_VAR), id(std::move(id)), initialized(false),
@@ -69,6 +70,8 @@ long long LValue::get_current_value() const {
 }
 
 bool LValue::operator==(const Value &rhs) const {
+    //std::cout << "I perform this\n";
+
     if (!rhs.is_compile_time_known() || !isValueKnown) {
         return id == Util::to_lvalue(rhs).id;
     } else {

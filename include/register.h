@@ -8,7 +8,7 @@
 struct Register {
     char label;
     bool free;
-    std::shared_ptr<Value> value;
+    std::shared_ptr<Value const> value;
 };
 
 

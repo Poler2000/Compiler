@@ -9,6 +9,7 @@
 #include "loop.h"
 #include "code_block.h"
 #include "branch.h"
+#include "memory_manager.h"
 
 class CodeGenerator {
 public:
@@ -62,9 +63,11 @@ private:
 
     void inc(const LValue& value);
 
-    void copy_from_to(Register &reg1, Register &reg2);
+    void copy_from_to(const Register &reg1, const Register &reg2);
 
     void dec(const LValue &value);
+
+    friend class MemoryManager;
 };
 
 

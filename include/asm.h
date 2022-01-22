@@ -25,26 +25,9 @@ public:
         ASM_HALT,
     };
 
-    constexpr static std::string_view instructions[] = {
-            "GET",
-            "PUT",
-            "LOAD",
-            "STORE",
-            "ADD",
-            "SUB",
-            "SHIFT",
-            "SWAP",
-            "RESET",
-            "INC",
-            "DEC",
-            "JUMP",
-            "JPOS",
-            "JZERO",
-            "JNEG",
-            "HALT",
-    };
+    static std::string instructions[16];
 
-    static std::string_view get_instruction(Instruction i);
+    static std::string& get_instruction(Instruction i);
 };
 
 #endif //COMPILER_V_0_1_ASM_H

@@ -13,9 +13,12 @@ public:
     [[nodiscard]] virtual bool is_initialized() const;
     [[nodiscard]] virtual bool is_compile_time_known() const = 0;
     virtual bool operator==(const Value &rhs) const = 0;
+    void inc_priority();
+    long long get_priority() const;
 
 private:
     ValueType type;
+    long long priority = 0;
 };
 
 #endif
