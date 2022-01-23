@@ -18,7 +18,6 @@ public:
     void mul(const Value& a, const Value& b);
     void div(const Value& a, const Value& b);
     void mod(const Value& a, const Value& b);
-    void mod(const Value& a, const Value& b, const Value& helper);
 
     void write(const Value& a);
     void read(const LValue& a);

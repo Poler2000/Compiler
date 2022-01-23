@@ -322,11 +322,12 @@ value:          NUM  { $$ = new RValue($1.val); }
                 ;
 
 identifier:     VARIABLE {
-                    //printf("value\n");
                     compiler.assert_variable_declared(*($1.id), $1.line);
                     compiler.assert_type(*($1.id), Value::ValueType::TYPE_VAR, $1.line);
 
                     LValue* var = compiler.get_var_manager().get(*($1.id)).get();
+                    var->inc_priority();
+                    //std::cout << var->getId() << ' ' << var->get_priority() << '\n';
                     $$ = var;
                                         //printf("value end\n");
 

@@ -142,4 +142,3 @@ else
 fi
 
 rm -f $outputFile
-
