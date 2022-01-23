@@ -149,6 +149,7 @@ start_for:      FOR VARIABLE FROM value TO value DO {
                     LValue* var = new LValue(*($2.id));
                     compiler.get_var_manager().declare(var);
                     compiler.initialize_variable(*var);
+                    var->inc_priority(100);
                     var->set_mutable(false);
 
                     auto ptr = std::make_shared<Loop>();
@@ -318,7 +319,7 @@ condition:     value EQ value {
                 ;
 
 value:          NUM  { $$ = new RValue($1.val); }
-                | identifier  { /*nothing to do*/ }
+                | identifier  { $1->inc_priority(); }
                 ;
 
 identifier:     VARIABLE {
@@ -326,7 +327,7 @@ identifier:     VARIABLE {
                     compiler.assert_type(*($1.id), Value::ValueType::TYPE_VAR, $1.line);
 
                     LValue* var = compiler.get_var_manager().get(*($1.id)).get();
-                    var->inc_priority();
+                    //var->inc_priority();
                     //std::cout << var->getId() << ' ' << var->get_priority() << '\n';
                     $$ = var;
                                         //printf("value end\n");

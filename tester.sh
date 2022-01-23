@@ -13,7 +13,7 @@ if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
     echo "input: $input"
-    echo "$input" | ./virtual_machine/maszyna-wirtualna $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
+    echo "$input" | ./virtual_machine/maszyna-wirtualna-cln $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
     diffRes=$(diff $resultFile $expectedFile)
     echo $diffRes
     if [ "$diffRes" ]; then
@@ -39,7 +39,7 @@ if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
     echo "input: $input"
-    echo "$input" | ./virtual_machine/maszyna-wirtualna $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
+    echo "$input" | ./virtual_machine/maszyna-wirtualna-cln $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
     diffRes=$(diff $resultFile $expectedFile)
     echo $diffRes
     if [ "$diffRes" ]; then
@@ -64,7 +64,7 @@ if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
     echo "input: $input"
-    echo "$input" | ./virtual_machine/maszyna-wirtualna $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
+    echo "$input" | ./virtual_machine/maszyna-wirtualna-cln $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
     diffRes=$(diff $resultFile $expectedFile)
     echo $diffRes
     if [ "$diffRes" ]; then
@@ -89,7 +89,7 @@ if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
     echo "input: $input"
-    echo "$input" | ./virtual_machine/maszyna-wirtualna $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
+    echo "$input" | ./virtual_machine/maszyna-wirtualna-cln $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
     diffRes=$(diff $resultFile $expectedFile)
     echo $diffRes
     if [ "$diffRes" ]; then
@@ -114,7 +114,7 @@ if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
     echo "input: $input"
-    echo "$input" | ./virtual_machine/maszyna-wirtualna $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
+    echo "$input" | ./virtual_machine/maszyna-wirtualna-cln $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
     diffRes=$(diff $resultFile $expectedFile)
     echo $diffRes
     if [ "$diffRes" ]; then
@@ -137,7 +137,7 @@ echo "In test: $title:"
 if [ $? -eq 1 ] ; then
     echo -e "COMPILATION FAILURE\n"
 else
-    ./virtual_machine/maszyna-wirtualna $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
+    ./virtual_machine/maszyna-wirtualna-cln $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
     diffRes=$(diff $resultFile $expectedFile)
     echo $diffRes
     if [ "$diffRes" ]; then
@@ -162,7 +162,7 @@ if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
     echo "input: $input"
-    echo "$input" | ./virtual_machine/maszyna-wirtualna $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
+    echo "$input" | ./virtual_machine/maszyna-wirtualna-cln $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
     diffRes=$(diff $resultFile $expectedFile)
     echo $diffRes
     if [ "$diffRes" ]; then
@@ -185,7 +185,7 @@ if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
     echo "input: $input"
-    echo "$input" | ./virtual_machine/maszyna-wirtualna $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
+    echo "$input" | ./virtual_machine/maszyna-wirtualna-cln $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
     diffRes=$(diff $resultFile $expectedFile)
     echo $diffRes
     if [ "$diffRes" ]; then
@@ -210,7 +210,7 @@ if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
     echo "input: $input"
-    echo "$input" | ./virtual_machine/maszyna-wirtualna $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
+    echo "$input" | ./virtual_machine/maszyna-wirtualna-cln $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
     diffRes=$(diff $resultFile $expectedFile)
     echo $diffRes
     if [ "$diffRes" ]; then
@@ -235,7 +235,7 @@ if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
     echo "input: $input"
-    echo "$input" | ./virtual_machine/maszyna-wirtualna $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
+    echo "$input" | ./virtual_machine/maszyna-wirtualna-cln $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
     diffRes=$(diff $resultFile $expectedFile)
     echo $diffRes
     if [ "$diffRes" ]; then
@@ -258,7 +258,7 @@ echo "In test: $title:"
 if [ $? -eq 1 ] ; then
     echo -e "COMPILATION FAILURE\n"
 else
-    ./virtual_machine/maszyna-wirtualna $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
+    ./virtual_machine/maszyna-wirtualna-cln $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
     diffRes=$(diff $resultFile $expectedFile)
     echo $diffRes
     if [ "$diffRes" ]; then
@@ -283,7 +283,7 @@ if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
     echo "input: $input"
-    echo "$input" | ./virtual_machine/maszyna-wirtualna $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
+    echo "$input" | ./virtual_machine/maszyna-wirtualna-cln $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
     diffRes=$(diff $resultFile $expectedFile)
     echo $diffRes
     if [ "$diffRes" ]; then
@@ -306,7 +306,7 @@ echo "In test: $title:"
 if [ $? -eq 1 ] ; then
     echo -e "COMPILATION FAILURE\n"
 else
-    ./virtual_machine/maszyna-wirtualna $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
+    ./virtual_machine/maszyna-wirtualna-cln $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
     diffRes=$(diff $resultFile $expectedFile)
     echo $diffRes
     if [ "$diffRes" ]; then
@@ -331,7 +331,7 @@ if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
     echo "input: $input"
-    echo "$input" | ./virtual_machine/maszyna-wirtualna $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
+    echo "$input" | ./virtual_machine/maszyna-wirtualna-cln $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
     diffRes=$(diff $resultFile $expectedFile)
     echo $diffRes
     if [ "$diffRes" ]; then
@@ -356,7 +356,7 @@ if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
     echo "input: $input"
-    echo "$input" | ./virtual_machine/maszyna-wirtualna $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
+    echo "$input" | ./virtual_machine/maszyna-wirtualna-cln $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
     diffRes=$(diff $resultFile $expectedFile)
     echo $diffRes
     if [ "$diffRes" ]; then
@@ -381,7 +381,7 @@ if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
     echo "input: $input"
-    echo "$input" | ./virtual_machine/maszyna-wirtualna $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
+    echo "$input" | ./virtual_machine/maszyna-wirtualna-cln $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
     diffRes=$(diff $resultFile $expectedFile)
     echo $diffRes
     if [ "$diffRes" ]; then
@@ -406,7 +406,7 @@ if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
     echo "input: $input"
-    echo "$input" | ./virtual_machine/maszyna-wirtualna $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
+    echo "$input" | ./virtual_machine/maszyna-wirtualna-cln $outputFile | sed 's/? //g' | grep ">" | sed 's/> //g' >$resultFile
     diffRes=$(diff $resultFile $expectedFile)
     echo $diffRes
     if [ "$diffRes" ]; then

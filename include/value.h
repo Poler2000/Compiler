@@ -14,6 +14,7 @@ public:
     [[nodiscard]] virtual bool is_compile_time_known() const = 0;
     virtual bool operator==(const Value &rhs) const = 0;
     void inc_priority();
+    void inc_priority(int n);
     long long get_priority() const;
 
 private:

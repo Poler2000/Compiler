@@ -6,17 +6,14 @@
 #include <array>
 
 #include "register.h"
-#include "code_generator.h"
-
-class CodeGenerator;
 
 class MemoryManager {
 public:
     static uint64_t allocate(uint64_t size);
-    static Register &get_free_reg(CodeGenerator* generator);
+    static Register &get_free_reg();
     static Register &get_a();
     static Register &get_h();
-    static std::shared_ptr<Register> check_for_value(Value&);
+    static Register &get_g();
 private:
     static constexpr size_t nofRegisters = 8;
     static uint64_t memoryPtr;

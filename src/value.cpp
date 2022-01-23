@@ -20,3 +20,7 @@ void Value::inc_priority() {
 long long Value::get_priority() const {
     return priority;
 }
+
+void Value::inc_priority(int n) {
+    priority += n;
+}

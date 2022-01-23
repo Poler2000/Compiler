@@ -1,6 +1,6 @@
 #!/bin/bash
 
-inputFile="./labor4/error0.imp"
+inputFile="./tests/error0.imp"
 outputFile="./result.txt"
 
 title="error0"
@@ -14,7 +14,7 @@ fi
 
 rm -f $outputFile
 
-inputFile="./labor4/error1.imp"
+inputFile="./tests/error1.imp"
 outputFile="./result.txt"
 
 title="error1"
@@ -28,7 +28,7 @@ fi
 
 rm -f $outputFile
 
-inputFile="./labor4/error2.imp"
+inputFile="./tests/error2.imp"
 outputFile="./result.txt"
 
 title="error2"
@@ -42,7 +42,7 @@ fi
 
 rm -f $outputFile
 
-inputFile="./labor4/error3.imp"
+inputFile="./tests/error3.imp"
 outputFile="./result.txt"
 
 title="error3"
@@ -56,7 +56,7 @@ fi
 
 rm -f $outputFile
 
-inputFile="./labor4/error4.imp"
+inputFile="./tests/error4.imp"
 outputFile="./result.txt"
 
 title="error4"
@@ -70,7 +70,7 @@ fi
 
 rm -f $outputFile
 
-inputFile="./labor4/error5.imp"
+inputFile="./tests/error5.imp"
 outputFile="./result.txt"
 
 title="error5"
@@ -84,7 +84,7 @@ fi
 
 rm -f $outputFile
 
-inputFile="./labor4/error6.imp"
+inputFile="./tests/error6.imp"
 outputFile="./result.txt"
 
 title="error6"
@@ -98,7 +98,7 @@ fi
 
 rm -f $outputFile
 
-inputFile="./labor4/error7.imp"
+inputFile="./tests/error7.imp"
 outputFile="./result.txt"
 
 title="error7"
@@ -112,7 +112,7 @@ fi
 
 rm -f $outputFile
 
-inputFile="./labor4/error8.imp"
+inputFile="./tests/error8.imp"
 outputFile="./result.txt"
 
 title="error8"
@@ -126,7 +126,7 @@ fi
 
 rm -f $outputFile
 
-inputFile="./labor4/error9.imp"
+inputFile="./tests/error9.imp"
 outputFile="./result.txt"
 
 title="error9"
