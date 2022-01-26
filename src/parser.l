@@ -6,6 +6,8 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <stack>
+
 #include "parser_tab.h"
 void yyerror (const char *s);
 int yylex();
@@ -15,6 +17,7 @@ static int lex_number(int token);
 static int lex_variable(int token);
 
 unsigned int lines = 1;
+std::stack<Token> tokens;
 
 #define lex_degug(token) \
     ({ \
@@ -116,6 +119,7 @@ static int lex_token(int token) {
     yylval.token.val = 0;
     yylval.token.line = lines;
     yylval.token.id = nullptr;
+    tokens.push(yylval.token);
 
     return token;
 }
@@ -125,6 +129,7 @@ static int lex_number(int token) {
     yylval.token.line = lines;
     yylval.token.id = nullptr;
     //lex_degug_num(yylval.token.val);
+    tokens.push(yylval.token);
 
     return token;
 }
@@ -134,5 +139,7 @@ static int lex_variable(int token) {
     yylval.token.line = lines;
     yylval.token.id = new std::string(yytext);
     //lex_degug_var(yytext);
+    tokens.push(yylval.token);
+
     return token;
 }

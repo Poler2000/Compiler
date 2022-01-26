@@ -22,10 +22,6 @@ long Array::get_low() const {
     return firstIndex;
 }
 
-bool Array::is_compile_time_known() const {
-    return false;
-}
-
 bool Array::operator==(const Value &rhs) const {
     return false;
 }

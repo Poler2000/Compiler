@@ -11,7 +11,6 @@ public:
     explicit Value(ValueType type);
     [[nodiscard]] ValueType get_type() const;
     [[nodiscard]] virtual bool is_initialized() const;
-    [[nodiscard]] virtual bool is_compile_time_known() const = 0;
     virtual bool operator==(const Value &rhs) const = 0;
     void inc_priority();
     void inc_priority(int n);

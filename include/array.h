@@ -10,13 +10,11 @@ public:
     Array(const std::string& id, long firstIndex, long lastIndex);
     uint64_t get_size() override;
     void set_current(Value* val);
-    long get_low() const;
-    const Value& get_current() const;
-    [[nodiscard]] bool is_compile_time_known() const override;
+    [[nodiscard]] long get_low() const;
+    [[nodiscard]] const Value& get_current() const;
     bool operator==(const Value &rhs) const override;
 
 private:
-    std::vector<std::shared_ptr<LValue>> elements;
     Value* current;
     long firstIndex;
     long lastIndex;

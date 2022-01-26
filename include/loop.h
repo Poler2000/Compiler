@@ -6,8 +6,6 @@
 struct Loop {
     LValue* iterator;
     LValue* counter;
-    /*std::string l1;
-    std::string l2;*/
     uint64_t condLength;
 };
 

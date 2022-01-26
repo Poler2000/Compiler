@@ -87,6 +87,7 @@ declare:        VARIABLE {
                     compiler.assert_variable_not_declared(*($1.id), $1.line);
                     LValue* var = new LValue(*($1.id));
                     compiler.get_var_manager().declare(var);
+                    delete $1.id;
                 }
                 | VARIABLE LEFT_BRACKET NUM ARRAY_RNG NUM RIGHT_BRACKET {
                     //printf("new array declaration: %s\n", $1.id->c_str());
@@ -94,6 +95,7 @@ declare:        VARIABLE {
                     compiler.assert_array_range(*($1.id), $3.val, $5.val, $1.line);
                     Array* var = new Array(*($1.id), $3.val, $5.val);
                     compiler.get_var_manager().declare(var);
+                    delete $1.id;
                 }
                 ;
 
@@ -124,6 +126,7 @@ command:        identifier ASSIGN expression SEMICOLON {
                 | WRITE value SEMICOLON {
                     compiler.assert_initialized(*$2, $1.line);
                     compiler.get_code_generator().write(*$2);
+                    //delete $2;
                  }
                 ;
 
@@ -163,6 +166,10 @@ start_for:      FOR VARIABLE FROM value TO value DO {
                     ptr->counter = counter;
                     compiler.get_code_generator().start_for(ptr, *$4, *$6);
                     ////printf("new variable declaration: %s\n", counterLabel.c_str());
+                    delete $1.id;
+                    //delete $4;
+                    //delete $6;
+
                 }
                 ;
 
@@ -196,6 +203,9 @@ start_down_to:  FOR VARIABLE FROM value DOWN_TO value DO {
 
                     compiler.get_code_generator().start_for(ptr, *$4, *$6);
                     ////printf("new variable declaration: %s\n", counterLabel.c_str());
+                    delete $1.id;
+                    //delete $4;
+                    //delete $6;
                 }
                 ;
 
@@ -240,18 +250,23 @@ expression:    value {
 
                     compiler.get_code_generator().load(*$1);
                     //printf("value\n");
+                    //delete $1;
                 }
                 | value PLUS value {
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().add(*$1, *$3);
+                    //delete $1;
+                    //delete $3;
                 }
                 | value MINUS value {
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().sub(*$1, *$3);
+                    //delete $1;
+                    //delete $3;
                 }
                 | value TIMES value {
                     //printf("times\n");
@@ -260,6 +275,8 @@ expression:    value {
 
                     compiler.get_code_generator().mul(*$1, *$3);
                     //printf("times end\n");
+                    //delete $1;
+                    //delete $3;
                 }
                 | value DIV value {
                     compiler.assert_initialized(*$1, $2.line);
@@ -268,6 +285,8 @@ expression:    value {
                     compiler.get_var_manager().declare(var);
                     compiler.initialize_variable(*var);
                     compiler.get_code_generator().div(*$1, *$3);
+                    //delete $1;
+                    //delete $3;
                 }
                 | value MOD value {
                     compiler.assert_initialized(*$1, $2.line);
@@ -277,6 +296,8 @@ expression:    value {
                     compiler.initialize_variable(*var);
                     compiler.get_code_generator().mod(*$1, *$3);
                     //compiler.get_code_generator().mod(*$1, *$3, *var);
+                    //delete $1;
+                    //delete $3;
                 }
                 ;
 
@@ -285,36 +306,48 @@ condition:     value EQ value {
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().eq(*$1, *$3);
+                    //delete $1;
+                    //delete $3;
                 }
                 | value NEQ value {
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().neq(*$1, *$3);
+                    //delete $1;
+                    //delete $3;
                 }
                 | value LE value {
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().le(*$1, *$3);
+                    //delete $1;
+                    //delete $3;
                 }
                 | value GE value {
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().ge(*$1, *$3);
+                    //delete $1;
+                    //delete $3;
                 }
                 | value LEQ value {
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().leq(*$1, *$3);
+                    //delete $1;
+                    //delete $3;
                 }
                 | value GEQ value {
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().geq(*$1, *$3);
+                    //delete $1;
+                    //delete $3;
                 }
                 ;
 
@@ -330,6 +363,7 @@ identifier:     VARIABLE {
                     //var->inc_priority();
                     //std::cout << var->getId() << ' ' << var->get_priority() << '\n';
                     $$ = var;
+                    delete $1.id;
                                         //printf("value end\n");
 
                 }
@@ -345,6 +379,8 @@ identifier:     VARIABLE {
                    Array* array = new Array(*var);
                    LValue* index = compiler.get_var_manager().get(*($3.id)).get();
                    array->set_current(index);
+                   delete $1.id;
+                   delete $3.id;
 
                    $$ = array;
                 }
@@ -356,7 +392,7 @@ identifier:     VARIABLE {
                    Array* array = new Array(*var);
                    Value* num = new RValue($3.val);
                    array->set_current(num);
-
+                   delete $1.id;
                    $$ = array;
                  }
 

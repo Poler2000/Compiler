@@ -60,13 +60,7 @@ private:
 
     void add_line(const std::string& line);
 
-    void inc(const LValue& value);
-
     void copy_from_to(const Register &reg1, const Register &reg2);
-
-    void dec(const LValue &value);
-
-    friend class MemoryManager;
 };
 
 

@@ -6,17 +6,17 @@
 
 LValue::LValue(std::string id)
     : Value(ValueType::TYPE_VAR), id(std::move(id)), initialized(false),
-    address(0), _isMutable(true), isValueKnown(false), currentValue(0) {
+    address(0), _isMutable(true) {
 }
 
 LValue::LValue(std::string id, Value::ValueType type)
     : Value(type), id(std::move(id)), initialized(false), address(0),
-    _isMutable(true), isValueKnown(false), currentValue(0) {
+    _isMutable(true) {
 }
 
 LValue::LValue(std::string id, Value::ValueType type, bool init)
     : Value(type), id(std::move(id)), initialized(init), address(0),
-    _isMutable(true), isValueKnown(false), currentValue(0) {
+    _isMutable(true) {
 
 }
 
@@ -52,33 +52,10 @@ void LValue::set_initialized(bool init) {
     initialized = init;
 }
 
-bool LValue::is_compile_time_known() const {
-    return isValueKnown;
-}
-
-void LValue::set_current_value(long long int value) {
-    currentValue = value;
-    isValueKnown = true;
-}
-
-void LValue::reset_current_value() {
-    isValueKnown = false;
-}
-
-long long LValue::get_current_value() const {
-    return currentValue;
-}
-
 bool LValue::operator==(const Value &rhs) const {
-    //std::cout << "I perform this\n";
-
-    if (!rhs.is_compile_time_known() || !isValueKnown) {
+    if (rhs.get_type() == TYPE_VAR && get_type() == TYPE_VAR) {
         return id == Util::to_lvalue(rhs).id;
-    } else {
-        if (rhs.get_type() == TYPE_NUMBER) {
-            return currentValue == Util::to_rvalue(rhs).get_value();
-        } else {
-            return currentValue == Util::to_lvalue(rhs).get_current_value();
-        }
     }
+
+    return false;
 }
