@@ -83,14 +83,12 @@ declarations:   declarations COMMA declare { /*nothing to do*/ }
                 ;
 
 declare:        VARIABLE {
-                    //printf("new variable declaration: %s\n", $1.id->c_str());
                     compiler.assert_variable_not_declared(*($1.id), $1.line);
                     LValue* var = new LValue(*($1.id));
                     compiler.get_var_manager().declare(var);
                     delete $1.id;
                 }
                 | VARIABLE LEFT_BRACKET NUM ARRAY_RNG NUM RIGHT_BRACKET {
-                    //printf("new array declaration: %s\n", $1.id->c_str());
                     compiler.assert_variable_not_declared(*($1.id), $1.line);
                     compiler.assert_array_range(*($1.id), $3.val, $5.val, $1.line);
                     Array* var = new Array(*($1.id), $3.val, $5.val);
@@ -104,11 +102,9 @@ commands:      commands command { /*nothing to do*/ }
                 ;
 
 command:        identifier ASSIGN expression SEMICOLON {
-                    //printf("assign\n");
                     compiler.assert_variable_mutable(*($1), $2.line);
                     compiler.get_code_generator().assign(*$1);
                     compiler.initialize_variable(Util::to_mut_lvalue(*$1));
-                    //printf("assign\n");
                 }
                 | start_if start_else end_if {; }
                 | start_if end_if {; }
@@ -117,16 +113,13 @@ command:        identifier ASSIGN expression SEMICOLON {
                 | start_for end_for {;}
                 | start_down_to end_down_to {;}
                 | READ identifier SEMICOLON {
-                    //printf("read\n");
                     LValue* val = dynamic_cast<LValue*>($2);
                     compiler.get_code_generator().read(*val);
                     compiler.initialize_variable(*val);
-                    //printf("read\n");
                  }
                 | WRITE value SEMICOLON {
                     compiler.assert_initialized(*$2, $1.line);
                     compiler.get_code_generator().write(*$2);
-                    //delete $2;
                  }
                 ;
 
@@ -146,7 +139,6 @@ end_if:          commands END_IF {
                 ;
 
 start_for:      FOR VARIABLE FROM value TO value DO {
-                    ////printf("new variable declaration: %s\n", $2.id->c_str());
                     compiler.assert_variable_not_declared(*($2.id), $2.line);
 
                     LValue* var = new LValue(*($2.id));
@@ -165,11 +157,7 @@ start_for:      FOR VARIABLE FROM value TO value DO {
                     ptr->iterator = var;
                     ptr->counter = counter;
                     compiler.get_code_generator().start_for(ptr, *$4, *$6);
-                    ////printf("new variable declaration: %s\n", counterLabel.c_str());
-                    delete $1.id;
-                    //delete $4;
-                    //delete $6;
-
+                    delete $2.id;
                 }
                 ;
 
@@ -202,10 +190,7 @@ start_down_to:  FOR VARIABLE FROM value DOWN_TO value DO {
                     ptr->counter = counter;
 
                     compiler.get_code_generator().start_for(ptr, *$4, *$6);
-                    ////printf("new variable declaration: %s\n", counterLabel.c_str());
-                    delete $1.id;
-                    //delete $4;
-                    //delete $6;
+                    delete $2.id;
                 }
                 ;
 
@@ -249,34 +234,24 @@ expression:    value {
                     compiler.assert_initialized(*$1, lines);
 
                     compiler.get_code_generator().load(*$1);
-                    //printf("value\n");
-                    //delete $1;
                 }
                 | value PLUS value {
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().add(*$1, *$3);
-                    //delete $1;
-                    //delete $3;
                 }
                 | value MINUS value {
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().sub(*$1, *$3);
-                    //delete $1;
-                    //delete $3;
                 }
                 | value TIMES value {
-                    //printf("times\n");
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().mul(*$1, *$3);
-                    //printf("times end\n");
-                    //delete $1;
-                    //delete $3;
                 }
                 | value DIV value {
                     compiler.assert_initialized(*$1, $2.line);
@@ -285,8 +260,6 @@ expression:    value {
                     compiler.get_var_manager().declare(var);
                     compiler.initialize_variable(*var);
                     compiler.get_code_generator().div(*$1, *$3);
-                    //delete $1;
-                    //delete $3;
                 }
                 | value MOD value {
                     compiler.assert_initialized(*$1, $2.line);
@@ -295,9 +268,6 @@ expression:    value {
                     compiler.get_var_manager().declare(var);
                     compiler.initialize_variable(*var);
                     compiler.get_code_generator().mod(*$1, *$3);
-                    //compiler.get_code_generator().mod(*$1, *$3, *var);
-                    //delete $1;
-                    //delete $3;
                 }
                 ;
 
@@ -306,48 +276,36 @@ condition:     value EQ value {
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().eq(*$1, *$3);
-                    //delete $1;
-                    //delete $3;
                 }
                 | value NEQ value {
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().neq(*$1, *$3);
-                    //delete $1;
-                    //delete $3;
                 }
                 | value LE value {
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().le(*$1, *$3);
-                    //delete $1;
-                    //delete $3;
                 }
                 | value GE value {
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().ge(*$1, *$3);
-                    //delete $1;
-                    //delete $3;
                 }
                 | value LEQ value {
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().leq(*$1, *$3);
-                    //delete $1;
-                    //delete $3;
                 }
                 | value GEQ value {
                     compiler.assert_initialized(*$1, $2.line);
                     compiler.assert_initialized(*$3, $2.line);
 
                     compiler.get_code_generator().geq(*$1, *$3);
-                    //delete $1;
-                    //delete $3;
                 }
                 ;
 
@@ -360,12 +318,8 @@ identifier:     VARIABLE {
                     compiler.assert_type(*($1.id), Value::ValueType::TYPE_VAR, $1.line);
 
                     LValue* var = compiler.get_var_manager().get(*($1.id)).get();
-                    //var->inc_priority();
-                    //std::cout << var->getId() << ' ' << var->get_priority() << '\n';
                     $$ = var;
                     delete $1.id;
-                                        //printf("value end\n");
-
                 }
                 | VARIABLE LEFT_BRACKET VARIABLE RIGHT_BRACKET {
                     compiler.assert_variable_declared(*($1.id), $1.line);
@@ -398,7 +352,7 @@ identifier:     VARIABLE {
 
 %%
 
-void yyerror (const char *s) {fprintf (stderr, "Error: %s in line: %d\n", s, lines);}
+void yyerror (const char *s) { fprintf (stderr, "Error: %s in line: %d\n", s, lines); }
 
 int compile(const char* input, const char* output) {
     yyin = fopen(input, "r");

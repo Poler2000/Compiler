@@ -45,7 +45,6 @@ void CodeGenerator::mul(const Value &a, const Value& b) {
     reg2.free = false;
     Register& reg3 = MemoryManager::get_free_reg();
     reg3.free = false;
-    move_number_to_reg(63, reg3);
 
     move_value_to_reg(b, reg1);
     move_value_to_reg(a, reg2);
@@ -58,144 +57,94 @@ void CodeGenerator::mul(const Value &a, const Value& b) {
     add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg1.label + '\n');
 
     copy_from_to(reg1, reg4);
+    Register& reg5 = MemoryManager::get_free_reg();
+    add_line(std::string(Asm::get_instruction(Asm::ASM_RESET)) + ' ' + reg5.label + '\n');
+    add_line(std::string(Asm::get_instruction(Asm::ASM_RESET)) + ' ' + reg1.label + '\n');
+    add_line(std::string(Asm::get_instruction(Asm::ASM_DEC)) + ' ' + reg5.label + '\n');
+    add_line(std::string(Asm::get_instruction(Asm::ASM_RESET)) + " a\n");
+    add_line(std::string(Asm::get_instruction(Asm::ASM_INC)) + " a\n");
 
     add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg4.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_JZERO)) + " 26\n");
-    //add_line(std::string(Asm::get_instruction(Asm::ASM_SHIFT)) + ' ' + reg3.label + '\n');
+    add_line(std::string(Asm::get_instruction(Asm::ASM_JZERO)) + " 17\n");
     // check parity
-    Register& reg5 = MemoryManager::get_free_reg();
     add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg3.label + '\n');
     add_line(std::string(Asm::get_instruction(Asm::ASM_RESET)) + " a\n");
     add_line(std::string(Asm::get_instruction(Asm::ASM_ADD)) + ' ' + reg3.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_RESET)) + ' ' + reg5.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_DEC)) + ' ' + reg5.label + '\n');
     add_line(std::string(Asm::get_instruction(Asm::ASM_SHIFT)) + ' ' + reg5.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_INC)) + ' ' + reg5.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_INC)) + ' ' + reg5.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SHIFT)) + ' ' + reg5.label + '\n');
+    add_line(std::string(Asm::get_instruction(Asm::ASM_SHIFT)) + ' ' + reg4.label + '\n');
     add_line(std::string(Asm::get_instruction(Asm::ASM_SUB)) + ' ' + reg3.label + '\n');
-
-
 
     add_line(std::string(Asm::get_instruction(Asm::ASM_JZERO)) + " 4\n");
 
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg4.label + '\n');
+    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg1.label + '\n');
     add_line(std::string(Asm::get_instruction(Asm::ASM_ADD)) + ' ' + reg2.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg4.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg4.label + '\n');
-
+    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg1.label + '\n');
 
     add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg2.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_RESET)) + ' ' + reg4.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_INC)) + ' ' + reg4.label + '\n');
     add_line(std::string(Asm::get_instruction(Asm::ASM_SHIFT)) + ' ' + reg4.label + '\n');
     add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg2.label + '\n');
+
+    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg3.label + '\n');
+    add_line(std::string(Asm::get_instruction(Asm::ASM_SHIFT)) + ' ' + reg5.label + '\n');
+    add_line(std::string(Asm::get_instruction(Asm::ASM_JUMP)) + " -16\n");
 
     add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg1.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_RESET)) + ' ' + reg4.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_DEC)) + ' ' + reg4.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SHIFT)) + ' ' + reg4.label + '\n');
 
     auto block = blockStack.top()->get_code();
     blockStack.pop();
     reg3.free = true;
     reg4.free = true;
 
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg2.label + "(mul begin)" + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_RESET) + " a\n");
 
-    // a = 0 - jump to the very end
-    add_line(std::string(Asm::get_instruction(Asm::ASM_JZERO)) + ' ' +
-             std::to_string(4 * block.size() + 4 + 13 + 7 + 14 + 2) + '\n');
-    // a > 0 - jump to + * ?
-    add_line(std::string(Asm::get_instruction(Asm::ASM_JPOS)) + ' ' +
-             std::to_string(2 * block.size() + 22) + '\n');
-    // a < 0 - start - * ?
-    // a = -a
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg2.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SUB)) + ' ' + reg2.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_RESET)) + ' ' + reg2.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg2.label + '\n');
+    // a > 0
+    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg2.label + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_JNEG) + " 7\n");
+    add_line(Asm::get_instruction(Asm::ASM_JZERO) + " 4\n");
 
+    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg2.label + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg1.label + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_JNEG) + ' ' + std::to_string((block.size() + 13)) + '\n'); // imcomptatible signs - jump
+    add_line(Asm::get_instruction(Asm::ASM_JZERO) + ' ' + std::to_string((block.size() + 11)) + '\n'); // end
 
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg1.label + '\n');
-    // b < 0 - start - * -
-    add_line(std::string(Asm::get_instruction(Asm::ASM_JNEG)) + " 2\n");
-    // b > 0 - jump to - * +
-    add_line(std::string(Asm::get_instruction(Asm::ASM_JUMP)) + ' '
-             + std::to_string(block.size() + 8) + '\n');
+    // both positive
+    add_line(Asm::get_instruction(Asm::ASM_JUMP) + " 10\n");
 
-    // b = -b
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg1.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SUB)) + ' ' + reg1.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_RESET)) + ' ' + reg1.label + '\n');
+    // check b
+    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg2.label + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_SUB) + ' ' + reg2.label + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg2.label + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg1.label + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_JPOS) + ' ' + std::to_string((block.size() + 6)) + '\n'); // imcomptatible signs - jump
+    add_line(Asm::get_instruction(Asm::ASM_JZERO) + ' ' + std::to_string((block.size() + 4)) + '\n'); // end
+    // both negative
+    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg1.label + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_RESET) + " a\n");
+    add_line(Asm::get_instruction(Asm::ASM_SUB) + ' ' + reg1.label + '\n');
 
-    add_line(std::string(Asm::get_instruction(Asm::ASM_JZERO)) + ' ' +
-             std::to_string(block.size() + 2) + '\n');
     std::for_each(block.begin(), block.end(), [&](auto& line){
         add_line(line);
     });
-    add_line(std::string(Asm::get_instruction(Asm::ASM_JUMP)) + ' ' + std::to_string(-int(block.size() + 1)) + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg1.label + '\n');
-    // jump to the very end
-    add_line(std::string(Asm::get_instruction(Asm::ASM_JUMP)) + ' ' + std::to_string((3 * block.size() + 4 + 13 + 8)) + '\n');
-    // end of - * -
 
-    // start - * +
-    add_line(std::string(Asm::get_instruction(Asm::ASM_JZERO)) + ' ' +
-             std::to_string(block.size() + 2) + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_JUMP) + ' ' + std::to_string((block.size() + 8)) + '\n');
+
+
+    // sign(a) != sign(b)
+    add_line(Asm::get_instruction(Asm::ASM_JPOS) + " 4\n");
+    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg1.label + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_RESET) + " a\n");
+    add_line(Asm::get_instruction(Asm::ASM_SUB) + ' ' + reg1.label + '\n');
+
     std::for_each(block.begin(), block.end(), [&](auto& line){
         add_line(line);
     });
-    add_line(std::string(Asm::get_instruction(Asm::ASM_JUMP)) + ' ' + std::to_string(-int(block.size() + 1)) + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg1.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_RESET)) + ' ' + reg1.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg1.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SUB)) + ' ' + reg1.label + '\n');
-    // jump to the very end
-    add_line(std::string(Asm::get_instruction(Asm::ASM_JUMP)) + ' ' + std::to_string((2 * block.size() + 4 + 14)) + '\n');
-    // end of - * +
 
-    // start of + * ?
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg2.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg1.label + '\n');
-    // b < 0 - start + * -
-    add_line(std::string(Asm::get_instruction(Asm::ASM_JNEG)) + " 2\n");
-    // b > 0 - jump to + * +
-    add_line(std::string(Asm::get_instruction(Asm::ASM_JUMP)) + ' '
-             + std::to_string(block.size() + 11) + '\n');
-
-    // b = -b
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg1.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SUB)) + ' ' + reg1.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_RESET)) + ' ' + reg1.label + '\n');
-
-    add_line(std::string(Asm::get_instruction(Asm::ASM_JZERO)) + ' ' +
-             std::to_string(block.size() + 2) + '\n');
-    std::for_each(block.begin(), block.end(), [&](auto& line){
-        add_line(line);
-    });
-    add_line(std::string(Asm::get_instruction(Asm::ASM_JUMP)) + ' ' + std::to_string(-int(block.size() + 1)) + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg1.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_RESET)) + ' ' + reg1.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg1.label + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SUB)) + ' ' + reg1.label + '\n');
-    // jump to the very end
-    add_line(std::string(Asm::get_instruction(Asm::ASM_JUMP)) + ' ' + std::to_string((block.size() + 4)) + '\n');
-    // end of - * -
-
-    // start of + * +
-    add_line(std::string(Asm::get_instruction(Asm::ASM_JZERO)) + ' ' +
-             std::to_string(block.size() + 2) + '\n');
-    std::for_each(block.begin(), block.end(), [&](auto& line){
-        add_line(line);
-    });
-    add_line(std::string(Asm::get_instruction(Asm::ASM_JUMP)) + ' ' + std::to_string(-int(block.size() + 1)) + '\n');
-    add_line(std::string(Asm::get_instruction(Asm::ASM_SWAP)) + ' ' + reg1.label + '\n');
-    // end
+    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg1.label + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_RESET) + " a\n");
+    add_line(Asm::get_instruction(Asm::ASM_SUB) + ' ' + reg1.label + '\n');
 
     reg2.free = true;
     reg1.free = true;
-
 }
 
 void CodeGenerator::div(const Value &a, const Value& b) {
@@ -254,12 +203,12 @@ void CodeGenerator::div(const Value &a, const Value& b) {
     add_line(Asm::get_instruction(Asm::ASM_RESET) + " a\n");
     add_line(Asm::get_instruction(Asm::ASM_INC) + " a\n");
 
-    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg3.label + " ( count 0 ) " +'\n');
-    add_line(Asm::get_instruction(Asm::ASM_SUB) + ' ' + reg2.label + " ( count 0 ) " +'\n');
+    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg3.label + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_SUB) + ' ' + reg2.label + '\n');
 
     add_line(Asm::get_instruction(Asm::ASM_JPOS) + " 8\n");
-    add_line(Asm::get_instruction(Asm::ASM_ADD) + ' ' + reg2.label + " ( count 0 ) " +'\n');
-    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg3.label + " ( count 0 ) " +'\n');
+    add_line(Asm::get_instruction(Asm::ASM_ADD) + ' ' + reg2.label + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg3.label + '\n');
 
     add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg3.label + '\n');
     add_line(Asm::get_instruction(Asm::ASM_SHIFT) + ' ' + reg3.label + '\n');
@@ -267,15 +216,15 @@ void CodeGenerator::div(const Value &a, const Value& b) {
     add_line(Asm::get_instruction(Asm::ASM_INC) + ' ' + reg4.label + '\n');
     add_line(Asm::get_instruction(Asm::ASM_JUMP) + " -9\n");
 
-    add_line(Asm::get_instruction(Asm::ASM_ADD) + ' ' + reg2.label + " ( count 0 ) " +'\n');
+    add_line(Asm::get_instruction(Asm::ASM_ADD) + ' ' + reg2.label + '\n');
     add_line(Asm::get_instruction(Asm::ASM_RESET) + ' ' + reg3.label + '\n');
-    add_line(Asm::get_instruction(Asm::ASM_DEC) + ' ' + reg3.label + " ( count 0 ) " +'\n');
+    add_line(Asm::get_instruction(Asm::ASM_DEC) + ' ' + reg3.label + '\n');
     add_line(Asm::get_instruction(Asm::ASM_SHIFT) + ' ' + reg3.label + '\n');
     add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg1.label + '\n');
     add_line(Asm::get_instruction(Asm::ASM_RESET) + " a\n");
 
     // start loop
-    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg4.label + " (div loop) " + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg4.label + '\n');
     add_line(Asm::get_instruction(Asm::ASM_JNEG) + " 24\n");
     add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg4.label + '\n');
     add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg2.label + '\n');
@@ -314,7 +263,7 @@ void CodeGenerator::div(const Value &a, const Value& b) {
     add_line(Asm::get_instruction(Asm::ASM_RESET) + " a\n");
 
     // a > 0
-    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg2.label + " (div very begin) " +'\n');
+    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg2.label + '\n');
     add_line(Asm::get_instruction(Asm::ASM_JNEG) + " 7\n");
     add_line(Asm::get_instruction(Asm::ASM_JZERO) + " 4\n");
 
@@ -439,12 +388,12 @@ void CodeGenerator::mod(const Value &a, const Value& b) {
 
     add_line(Asm::get_instruction(Asm::ASM_INC) + " a\n");
 
-    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg3.label + " ( count 0 ) " +'\n');
-    add_line(Asm::get_instruction(Asm::ASM_SUB) + ' ' + reg2.label + " ( count 0 ) " +'\n');
+    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg3.label + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_SUB) + ' ' + reg2.label + '\n');
 
     add_line(Asm::get_instruction(Asm::ASM_JPOS) + " 8\n");
-    add_line(Asm::get_instruction(Asm::ASM_ADD) + ' ' + reg2.label + " ( count 0 ) " +'\n');
-    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg3.label + " ( count 0 ) " +'\n');
+    add_line(Asm::get_instruction(Asm::ASM_ADD) + ' ' + reg2.label + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg3.label + '\n');
 
     add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg3.label + '\n');
     add_line(Asm::get_instruction(Asm::ASM_SHIFT) + ' ' + reg3.label + '\n');
@@ -452,9 +401,9 @@ void CodeGenerator::mod(const Value &a, const Value& b) {
     add_line(Asm::get_instruction(Asm::ASM_INC) + ' ' + reg4.label + '\n');
     add_line(Asm::get_instruction(Asm::ASM_JUMP) + " -9\n");
 
-    add_line(Asm::get_instruction(Asm::ASM_ADD) + ' ' + reg2.label + " ( count 0 ) " +'\n');
-    add_line(Asm::get_instruction(Asm::ASM_RESET) + ' ' + reg3.label + " ( count 0 ) " +'\n');
-    add_line(Asm::get_instruction(Asm::ASM_DEC) + ' ' + reg3.label + " ( count 0 ) " +'\n');
+    add_line(Asm::get_instruction(Asm::ASM_ADD) + ' ' + reg2.label + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_RESET) + ' ' + reg3.label + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_DEC) + ' ' + reg3.label + '\n');
     add_line(Asm::get_instruction(Asm::ASM_SHIFT) + ' ' + reg3.label + '\n');
     add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg1.label + '\n');
 
@@ -487,7 +436,7 @@ void CodeGenerator::mod(const Value &a, const Value& b) {
     add_line(Asm::get_instruction(Asm::ASM_RESET) + " a\n");
 
     // a > 0
-    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg2.label + " (mod very begin) " +'\n');
+    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg2.label + '\n');
     add_line(Asm::get_instruction(Asm::ASM_JNEG) + ' ' + std::to_string((block.size() + 16)) + '\n');
     add_line(Asm::get_instruction(Asm::ASM_JZERO) + " 4\n");
 
@@ -504,13 +453,13 @@ void CodeGenerator::mod(const Value &a, const Value& b) {
         add_line(line);
     });
 
-    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg5.label + " ( main loop end ) " + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg5.label + '\n');
     add_line(Asm::get_instruction(Asm::ASM_JNEG) + " 3\n");
 
     add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg5.label + '\n');
     add_line(Asm::get_instruction(Asm::ASM_JUMP) + " 3\n");
 
-    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg5.label + " ( main loop end ) " + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg5.label + '\n');
     add_line(Asm::get_instruction(Asm::ASM_ADD) + ' ' + reg5.label + '\n');
 
 
@@ -538,7 +487,7 @@ void CodeGenerator::mod(const Value &a, const Value& b) {
         add_line(line);
     });
 
-    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg5.label + " ( main loop end ) " + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg5.label + '\n');
     add_line(Asm::get_instruction(Asm::ASM_JNEG) + " 3\n");
 
     add_line(Asm::get_instruction(Asm::ASM_SUB) + ' ' + reg5.label + '\n');
@@ -576,17 +525,7 @@ void CodeGenerator::assign(const Value& a) {
     Register& h = MemoryManager::get_h();
     Register& g = MemoryManager::get_g();
 
-    /*if (h.value != nullptr) {
-        std::cout << "h: " << Util::to_lvalue(*h.value).getId() << ' ' << h.value->get_priority() << '\n';
-        if (g.value != nullptr) {
-            std::cout << "g: " << Util::to_lvalue(*g.value).getId() << ' ' << g.value->get_priority() << '\n';
-        }
-        if (a.get_type() == Value::TYPE_VAR) {
-            std::cout << "a: " << Util::to_lvalue(a).getId() << ' ' << a.get_priority() << '\n';
-        }
-    }*/
-
-    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg.label + " (assign) " + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg.label + '\n');
     if (!loopStack.empty() || !branchStack.empty()) {
         if (h.value == nullptr || !(*h.value == a)) {
             if (g.value == nullptr || !(*g.value == a)) {
@@ -594,11 +533,11 @@ void CodeGenerator::assign(const Value& a) {
                 add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg.label + '\n');
                 add_line(Asm::get_instruction(Asm::ASM_STORE) + ' ' + reg.label + '\n');
             } else {
-                add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg.label + " (assign) " + '\n');
+                add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg.label + '\n');
                 add_line(Asm::get_instruction(Asm::ASM_SWAP) + " g\n");
             }
         } else {
-            add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg.label + " (assign) " + '\n');
+            add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg.label + '\n');
             add_line(Asm::get_instruction(Asm::ASM_SWAP) + " h\n");
         }
         reg.free = true;
@@ -616,14 +555,14 @@ void CodeGenerator::assign(const Value& a) {
 
     if (h.value == nullptr) {
         h.value = &a;
-        add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg.label + " (assign) " + '\n');
+        add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg.label + '\n');
         add_line(Asm::get_instruction(Asm::ASM_SWAP) + " h\n");
         reg.free = true;
         return;
     }
 
     if (*h.value == a) {
-        add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg.label + " (assign) " + '\n');
+        add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg.label + '\n');
         add_line(Asm::get_instruction(Asm::ASM_SWAP) + " h\n");
         reg.free = true;
         return;
@@ -631,14 +570,14 @@ void CodeGenerator::assign(const Value& a) {
 
     if (g.value == nullptr) {
         g.value = &a;
-        add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg.label + " (assign) " + '\n');
+        add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg.label + '\n');
         add_line(Asm::get_instruction(Asm::ASM_SWAP) + " g\n");
         reg.free = true;
         return;
     }
 
     if (*g.value == a) {
-        add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg.label + " (assign) " + '\n');
+        add_line(Asm::get_instruction(Asm::ASM_SWAP) + ' ' + reg.label + '\n');
         add_line(Asm::get_instruction(Asm::ASM_SWAP) + " g\n");
         reg.free = true;
         return;
@@ -681,6 +620,20 @@ std::vector<std::string> CodeGenerator::generate_asm_code() {
 }
 
 void CodeGenerator::eq(const Value &a, const Value &b) {
+    if (b.get_type() == Value::TYPE_NUMBER) {
+        if (Util::to_rvalue(b).get_value() == 0) {
+            move_value_to_reg(a, MemoryManager::get_a());
+            add_line(Asm::get_instruction(Asm::ASM_JZERO) + " 2\n");
+            return;
+        }
+    }
+    if (a.get_type() == Value::TYPE_NUMBER) {
+        if (Util::to_rvalue(a).get_value() == 0) {
+            move_value_to_reg(b, MemoryManager::get_a());
+            add_line(Asm::get_instruction(Asm::ASM_JZERO) + " 2\n");
+            return;
+        }
+    }
     Register& reg1 = MemoryManager::get_free_reg();
     reg1.free = false;
     Register& reg2 = MemoryManager::get_free_reg();
@@ -716,6 +669,21 @@ void CodeGenerator::neq(const Value &a, const Value &b) {
 }
 
 void CodeGenerator::le(const Value &a, const Value &b) {
+    if (b.get_type() == Value::TYPE_NUMBER) {
+        if (Util::to_rvalue(b).get_value() == 0) {
+            move_value_to_reg(a, MemoryManager::get_a());
+            add_line(Asm::get_instruction(Asm::ASM_JNEG) + " 2\n");
+            return;
+        }
+    }
+    if (a.get_type() == Value::TYPE_NUMBER) {
+        if (Util::to_rvalue(a).get_value() == 0) {
+            move_value_to_reg(b, MemoryManager::get_a());
+            add_line(Asm::get_instruction(Asm::ASM_JPOS) + " 2\n");
+            return;
+        }
+    }
+
     Register& reg1 = MemoryManager::get_free_reg();
     reg1.free = false;
     Register& reg2 = MemoryManager::get_free_reg();
@@ -733,6 +701,22 @@ void CodeGenerator::le(const Value &a, const Value &b) {
 }
 
 void CodeGenerator::ge(const Value &a, const Value &b) {
+    if (b.get_type() == Value::TYPE_NUMBER) {
+        if (Util::to_rvalue(b).get_value() == 0) {
+            move_value_to_reg(a, MemoryManager::get_a());
+            add_line(Asm::get_instruction(Asm::ASM_JPOS) + " 2\n");
+            return;
+        }
+    }
+
+    if (a.get_type() == Value::TYPE_NUMBER) {
+        if (Util::to_rvalue(a).get_value() == 0) {
+            move_value_to_reg(b, MemoryManager::get_a());
+            add_line(Asm::get_instruction(Asm::ASM_JNEG) + " 2\n");
+            return;
+        }
+    }
+
     Register& reg1 = MemoryManager::get_free_reg();
     reg1.free = false;
     Register& reg2 = MemoryManager::get_free_reg();
@@ -788,7 +772,7 @@ void CodeGenerator::geq(const Value &a, const Value &b) {
 void CodeGenerator::move_number_to_reg(const long long number, const Register &reg) {
     Register& helper = MemoryManager::get_free_reg();
 
-    if (number >= 0 && number < 16) {
+    if (number >= 0 && number < 32) {
         add_line(Asm::get_instruction(Asm::ASM_RESET) + ' ' + reg.label + '\n');
 
         for (int i = 0; i < number; i++) {
@@ -797,7 +781,7 @@ void CodeGenerator::move_number_to_reg(const long long number, const Register &r
         return;
     }
 
-    if (number < 0 && number > -16) {
+    if (number < 0 && number > -32) {
         add_line(Asm::get_instruction(Asm::ASM_RESET) + ' ' + reg.label + '\n');
 
         for (int i = 0; i > number; i--) {
@@ -942,8 +926,6 @@ void CodeGenerator::start_for(const std::shared_ptr<Loop> &loop, const Value& fr
 
 std::shared_ptr<Loop> CodeGenerator::end_for() {
     auto ptr = loopStack.top();
-
-    //inc(*(ptr->iterator));
 
     move_value_to_reg(*(ptr->iterator), MemoryManager::get_a());
     add_line(Asm::get_instruction(Asm::ASM_INC) + " a\n");
@@ -1109,11 +1091,11 @@ std::shared_ptr<Loop> CodeGenerator::end_while() {
     auto block = blockStack.top()->get_code();
     blockStack.pop();
 
-    add_line(Asm::get_instruction(Asm::ASM_JUMP) + ' ' + std::to_string(block.size() + 2) + " ( while jump )" + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_JUMP) + ' ' + std::to_string(block.size() + 2) + '\n');
     std::for_each(block.begin(), block.end(), [&](auto& line) {
         add_line(line);
     });
-    add_line(Asm::get_instruction(Asm::ASM_JUMP) + ' ' + std::to_string(-(int)((block.size()) + ptr->condLength + 1)) + " ( while end ) " + '\n');
+    add_line(Asm::get_instruction(Asm::ASM_JUMP) + ' ' + std::to_string(-(int)((block.size()) + ptr->condLength + 1)) + '\n');
     return ptr;
 }
 
