@@ -4,12 +4,14 @@
 #include <vector>
 #include <stack>
 #include <memory>
+
 #include "lvalue.h"
 #include "register.h"
 #include "loop.h"
 #include "code_block.h"
 #include "branch.h"
 #include "memory_manager.h"
+#include "asm.h"
 
 class CodeGenerator {
 public:

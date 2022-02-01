@@ -2,8 +2,6 @@ RM := rm -rf
 
 IDIR  := ./include
 SDIR  := ./src
-VMDIR := ./virtual_machine
-TDIR  := ./test
 
 CXX ?= g++
 LEX := flex
@@ -13,7 +11,7 @@ CXX_STD   = -std=c++17
 
 CXX_FLAGS += $(CXX_STD) $(GGDB)
 
-EXEC = compiler
+EXEC = kompilator
 SRC = $(wildcard $(SDIR)/*.cpp)
 OBJ = $(SRC:%.cpp=%.o)
 LIBS = fl

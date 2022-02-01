@@ -5,8 +5,6 @@
 #define YY_NO_UNPUT
 
 #include <stdio.h>
-#include <iostream>
-#include <stack>
 
 #include "parser_tab.h"
 void yyerror (const char *s);
@@ -17,22 +15,7 @@ static int lex_number(int token);
 static int lex_variable(int token);
 
 unsigned int lines = 1;
-std::stack<Token> tokens;
 
-#define lex_degug(token) \
-    ({ \
-        printf("token: %d\n", token); \
-    })
-
-#define lex_degug_num(num) \
-    ({ \
-        printf("num: %d\n", num); \
-    })
-
-#define lex_degug_var(var) \
-    ({ \
-        printf("var: %s\n", var); \
-    })
 %}
 
 WHITE_SPACE     [ \t]
@@ -44,8 +27,8 @@ WHITE_SPACE     [ \t]
 {WHITE_SPACE}+  ;
 
 
-\(              { /*printf("Comment begin\n");*/ BEGIN(COMMENT); }
-<COMMENT>\)     { /*printf("Comment end\n");*/ BEGIN(INITIAL); }
+\(              { BEGIN(COMMENT); }
+<COMMENT>\)     { BEGIN(INITIAL); }
 <COMMENT>\n     { lines++; }
 <COMMENT>[^\)\(\n)] { ; }
 
@@ -115,11 +98,9 @@ ENDIF           { return lex_token(END_IF); }
 %%
 
 static int lex_token(int token) {
-    //lex_degug(token);
     yylval.token.val = 0;
     yylval.token.line = lines;
     yylval.token.id = nullptr;
-    tokens.push(yylval.token);
 
     return token;
 }
@@ -128,8 +109,6 @@ static int lex_number(int token) {
     yylval.token.val = std::stoll(yytext);
     yylval.token.line = lines;
     yylval.token.id = nullptr;
-    //lex_degug_num(yylval.token.val);
-    tokens.push(yylval.token);
 
     return token;
 }
@@ -138,8 +117,6 @@ static int lex_variable(int token) {
     yylval.token.val = 0;
     yylval.token.line = lines;
     yylval.token.id = new std::string(yytext);
-    //lex_degug_var(yytext);
-    tokens.push(yylval.token);
 
     return token;
 }

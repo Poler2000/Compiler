@@ -7,7 +7,7 @@ expectedFile="./tests/test0-expected.txt"
 
 title="test0"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
@@ -32,7 +32,7 @@ input="27"
 
 title="test1a"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
@@ -56,7 +56,7 @@ input="27"
 
 title="test1b"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
@@ -80,7 +80,7 @@ input="27"
 
 title="test1c"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
@@ -104,7 +104,7 @@ input="27"
 
 title="test1d"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
@@ -127,7 +127,7 @@ resultFile="./result.txt"
 expectedFile="./tests/test2-expected.txt"
 title="test2"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e "COMPILATION FAILURE\n"
 else

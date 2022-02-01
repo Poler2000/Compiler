@@ -5,7 +5,7 @@ outputFile="./result.txt"
 
 title="error0"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e "ERROR DETECTED (TEST SUCCESS)\n"
 else
@@ -19,7 +19,7 @@ outputFile="./result.txt"
 
 title="error1"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e "ERROR DETECTED (TEST SUCCESS)\n"
 else
@@ -33,7 +33,7 @@ outputFile="./result.txt"
 
 title="error2"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e "ERROR DETECTED (TEST SUCCESS)\n"
 else
@@ -47,7 +47,7 @@ outputFile="./result.txt"
 
 title="error3"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e "ERROR DETECTED (TEST SUCCESS)\n"
 else
@@ -61,7 +61,7 @@ outputFile="./result.txt"
 
 title="error4"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e "ERROR DETECTED (TEST SUCCESS)\n"
 else
@@ -75,7 +75,7 @@ outputFile="./result.txt"
 
 title="error5"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e "ERROR DETECTED (TEST SUCCESS)\n"
 else
@@ -89,7 +89,7 @@ outputFile="./result.txt"
 
 title="error6"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e "ERROR DETECTED (TEST SUCCESS)\n"
 else
@@ -103,7 +103,7 @@ outputFile="./result.txt"
 
 title="error7"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e "ERROR DETECTED (TEST SUCCESS)\n"
 else
@@ -117,7 +117,7 @@ outputFile="./result.txt"
 
 title="error8"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e "ERROR DETECTED (TEST SUCCESS)\n"
 else
@@ -131,7 +131,7 @@ outputFile="./result.txt"
 
 title="error9"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e "ERROR DETECTED (TEST SUCCESS)\n"
 else

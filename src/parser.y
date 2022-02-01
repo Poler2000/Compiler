@@ -341,13 +341,13 @@ identifier:     VARIABLE {
                 | VARIABLE LEFT_BRACKET NUM RIGHT_BRACKET {
                     compiler.assert_variable_declared(*($1.id), $1.line);
 
-                   compiler.assert_type(*($1.id), Value::ValueType::TYPE_ARRAY, $1.line);
-                   Array* var = dynamic_cast<Array*>(compiler.get_var_manager().get(*($1.id)).get());
-                   Array* array = new Array(*var);
-                   Value* num = new RValue($3.val);
-                   array->set_current(num);
-                   delete $1.id;
-                   $$ = array;
+                    compiler.assert_type(*($1.id), Value::ValueType::TYPE_ARRAY, $1.line);
+                    Array* var = dynamic_cast<Array*>(compiler.get_var_manager().get(*($1.id)).get());
+                    Array* array = new Array(*var);
+                    Value* num = new RValue($3.val);
+                    array->set_current(num);
+                    delete $1.id;
+                    $$ = array;
                  }
 
 %%

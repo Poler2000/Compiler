@@ -8,7 +8,7 @@ input="1 0"
 
 title="0-div-mod"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
@@ -34,7 +34,7 @@ input="-7"
 
 title="1-numbers"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
@@ -59,7 +59,7 @@ input="1"
 
 title="2-fib"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
@@ -84,7 +84,7 @@ input="20"
 
 title="3-fib-factorial"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
@@ -109,7 +109,7 @@ input="20"
 
 title="4-factorial"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
@@ -133,7 +133,7 @@ expectedFile="./tests/5-tab-expected.txt"
 
 title="5-tab"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e "COMPILATION FAILURE\n"
 else
@@ -157,7 +157,7 @@ input="1234567890 1234567890987654321 987654321"
 
 title="6-mod-mult"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
@@ -180,7 +180,7 @@ input="0 0 0"
 
 title="7-loopiii"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
@@ -205,7 +205,7 @@ input="1 0 2"
 
 title="7-loopiii"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
@@ -230,7 +230,7 @@ input="12 23 34"
 
 title="8-for"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
@@ -254,7 +254,7 @@ expectedFile="./tests/9-sort-expected.txt"
 
 title="9-sort"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e "COMPILATION FAILURE\n"
 else
@@ -278,7 +278,7 @@ input="18"
 
 title="program0"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
@@ -302,7 +302,7 @@ expectedFile="./tests/program1-expected.txt"
 
 title="program1"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e "COMPILATION FAILURE\n"
 else
@@ -326,7 +326,7 @@ input="1234567890"
 
 title="program2"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
@@ -351,7 +351,7 @@ input="12345678901"
 
 title="program2"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
@@ -376,7 +376,7 @@ input="12345678903"
 
 title="program2"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
@@ -401,7 +401,7 @@ input="26 7"
 
 title="div-mod"
 echo "In test: $title:"
-./compiler $inputFile $outputFile
+./kompilator $inputFile $outputFile
 if [ $? -eq 1 ] ; then
     echo -e " \033[0;31mCOMPILATION FAILURE\033[0m"
 else
