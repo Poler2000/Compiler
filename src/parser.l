@@ -91,7 +91,7 @@ ENDIF           { return lex_token(END_IF); }
 \]              { return lex_token(RIGHT_BRACKET); }
 
 
-[a-z]+          { return lex_variable(VARIABLE); }
+[_a-z]+          { return lex_variable(VARIABLE); }
 \-?[0-9]+       { return lex_number(NUM); }
 .               { return lex_token(ERROR); }
 
